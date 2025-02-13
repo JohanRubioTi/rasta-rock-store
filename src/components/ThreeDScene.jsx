@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const ThreeDScene = ({ variant }) => { // Accept variant prop
+const ThreeDScene = ({ variant }) => {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -12,12 +12,7 @@ const ThreeDScene = ({ variant }) => { // Accept variant prop
     renderer.setClearColor(0x000000, 0);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Rasta Colors
-    const rastaRed = new THREE.Color('#E03A3E');
-    const rastaYellow = new THREE.Color('#F7D046');
-    const rastaGreen = new THREE.Color('#34B44A');
-
-    // Shader Materials for Performance and Animated Effect
+    // Shader Materials
     const vertexShader = `
       uniform float time;
       uniform vec2 mouse;
@@ -27,8 +22,9 @@ const ThreeDScene = ({ variant }) => { // Accept variant prop
         vUv = uv;
         vec3 pos = position;
         float distortionFactor = 1.0;
-        pos.z += sin(pos.x * 8.0 + time + mouse.x * distortionFactor) * 0.05;
-        pos.z += cos(pos.y * 8.0 + time + mouse.y * distortionFactor) * 0.05;
+        // Apply wave effect to grid vertices based on both x and y
+        pos.z += sin(pos.x * 10.0 + time + mouse.x * distortionFactor) * 0.05;
+        pos.z += cos(pos.y * 10.0 + time + mouse.y * distortionFactor) * 0.05;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
     `;
@@ -36,76 +32,69 @@ const ThreeDScene = ({ variant }) => { // Accept variant prop
     const fragmentShader = `
       varying vec2 vUv;
       void main() {
-        vec3 rastaColor = vec3(0.0);
-        float bandIndex = floor(vUv.y * 3.0); // 3 bands: 0, 1, 2
-        float modulatedY = fract(vUv.y * 3.0); // Fraction within each band
+        vec4 color = vec4(0.0, 0.0, 0.0, 0.0); // Start with transparent black background
+        float gridX = step(0.98, fract(vUv.x * 20.0)) + step(0.98, 1.0 - fract(vUv.x * 20.0));
+        float gridY = step(0.98, fract(vUv.y * 20.0)) + step(0.98, 1.0 - fract(vUv.y * 20.0));
+        float grid = min(gridX + gridY, 1.0);
 
-        if (bandIndex == 0.0) {
-          rastaColor = vec3(0.878, 0.227, 0.243); // rastaRed
-        } else if (bandIndex == 1.0) {
-          rastaColor = vec3(0.964, 0.815, 0.274); // rastaYellow
-        } else {
-          rastaColor = vec3(0.203, 0.705, 0.290); // rastaGreen
+        if (grid > 0.0) {
+          // Multicolored grid lines with full opacity
+          if (mod(floor(vUv.x * 20.0), 3.0) == 0.0) {
+            color = vec4(1.0, 0.0, 0.0, 1.0); // Red, Opaque
+          } else if (mod(floor(vUv.y * 20.0), 3.0) == 1.0) {
+            color = vec4(1.0, 1.0, 0.0, 1.0); // Yellow, Opaque
+          } else {
+            color = vec4(0.0, 1.0, 0.0, 1.0); // Green, Opaque
+          }
         }
 
-        gl_FragColor = vec4(rastaColor, 0.9);
+        gl_FragColor = color; // Output color (background will be transparent if 'grid' is 0)
       }
     `;
-
 
     const shaderMaterial = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      // wireframe: true, // Keep wireframe for op-art style
+      transparent: true,
     });
 
+    let geometry;
+    const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+    const cylinderGeometry = new THREE.CylinderGeometry(0.3, 0.3, 2, 16);
+    const planeGeometry = new THREE.PlaneGeometry(10, 10, 100, 100);
 
-    // Geometry - Conditional based on variant prop
-    let geometry; // Declare geometry here, before the if/else block
-    const sphereGeometry = new THREE.SphereGeometry(0.1, 8, 8); // Smaller spheres
-    const cylinderGeometry = new THREE.CylinderGeometry(0.3, 0.3, 2, 16); // Cylinders for catalog
-    const planeGeometry = new THREE.PlaneGeometry(10, 10, 200, 200); // Plane for homepage
-
-
-    let mesh; // Declare mesh outside if block
+    let mesh;
 
     if (variant === 'catalog') {
       geometry = cylinderGeometry;
       mesh = new THREE.Mesh(geometry, shaderMaterial);
-      mesh.position.set(0, -1, 0); // Adjust cylinder position if needed
-      mesh.rotation.x = Math.PI / 2; // Rotate cylinders to stand up
+      mesh.position.set(0, -1, 0);
+      mesh.rotation.x = Math.PI / 2;
 
-      // Define materials LOCALLY within the 'catalog' variant block
-      const materialRed = new THREE.MeshStandardMaterial({ color: rastaRed, roughness: 0.8, metalness: 0.2 });
-      const materialYellow = new THREE.MeshStandardMaterial({ color: rastaYellow, roughness: 0.8, metalness: 0.2 });
-      const materialGreen = new THREE.MeshStandardMaterial({ color: rastaGreen, roughness: 0.8, metalness: 0.2 });
+      const materialRed = new THREE.MeshStandardMaterial({ color: new THREE.Color('#E03A3E'), roughness: 0.8, metalness: 0.2 });
+      const materialYellow = new THREE.MeshStandardMaterial({ color: new THREE.Color('#F7D046'), roughness: 0.8, metalness: 0.2 });
+      const materialGreen = new THREE.MeshStandardMaterial({ color: new THREE.Color('#34B44A'), roughness: 0.8, metalness: 0.2 });
 
+      const sphereMaterials = [materialRed, materialYellow, materialGreen];
 
-      // Add spheres around cylinders for complexity
-      const sphereMaterials = [materialRed, materialYellow, materialGreen]; // Reuse materials - MATERIALS DEFINED ABOVE NOW!
-
-      for (let i = 0; i < 15; i++) { // More spheres
-        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterials[i % 3]); // Cycle through colors
+      for (let i = 0; i < 15; i++) {
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterials[i % 3]);
         sphere.position.set(
-          mesh.position.x + Math.random() * 2 - 1, // Position around cylinder x
-          mesh.position.y + Math.random() * 2 - 1, // Position around cylinder y
-          mesh.position.z + Math.random() * 2 - 1  // Position around cylinder z
+          mesh.position.x + Math.random() * 2 - 1,
+          mesh.position.y + Math.random() * 2 - 1,
+          mesh.position.z + Math.random() * 2 - 1
         );
-        mesh.add(sphere); // Add spheres as children of the cylinder for easy rotation
+        mesh.add(sphere);
       }
-
 
     } else {
       geometry = planeGeometry;
       mesh = new THREE.Mesh(geometry, shaderMaterial);
-      mesh.rotation.x = -Math.PI / 2; // Lay plane flat for homepage
+      mesh.rotation.x = -Math.PI / 2;
     }
 
-
     scene.add(mesh);
-
-
-    camera.position.z = variant === 'catalog' ? 2 : 5; // Adjusted camera Z for catalog variant - cylinders closer, EVEN CLOSER
+    camera.position.z = variant === 'catalog' ? 2 : 5;
 
     const clock = new THREE.Clock();
     let mouseX = 0;
@@ -117,25 +106,20 @@ const ThreeDScene = ({ variant }) => { // Accept variant prop
     };
     window.addEventListener('mousemove', onMouseMove);
 
-
     const animate = () => {
       requestAnimationFrame(animate);
-      shaderMaterial.uniforms.time = { value: clock.getElapsedTime() }; // Correctly update uniforms here!
+      shaderMaterial.uniforms.time = { value: clock.getElapsedTime() };
       shaderMaterial.uniforms.mouse = { value: new THREE.Vector2(mouseX, mouseY) };
-
       renderer.render(scene, camera);
     };
     animate();
 
-
-    // Resize handling (adjust camera aspect)
     const handleResize = () => {
       camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     };
     window.addEventListener('resize', handleResize);
-
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
@@ -144,15 +128,12 @@ const ThreeDScene = ({ variant }) => { // Accept variant prop
         mountRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
-      if (geometry) { // Check if geometry exists before disposing
-        geometry.dispose(); // Dispose of geometry (which could be planeGeometry or cylinderGeometry)
-      }
+      if (geometry) geometry.dispose();
       shaderMaterial.dispose();
     };
-  }, [variant]); // variant as dependency for useEffect
+  }, [variant]);
 
-
-  return <div ref={mountRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />; // Full page style!
+  return <div ref={mountRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />;
 };
 
 export default ThreeDScene;
