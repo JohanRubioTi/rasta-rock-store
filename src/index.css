@@ -16,8 +16,8 @@ body {
 }
 
 .navbar-pill {
-  @apply bg-rastaDark bg-opacity-70 backdrop-blur-lg rounded-full border border-rastaLight border-opacity-20 py-4 px-8 my-6 flex items-center justify-between;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0.03)); /* Even more subtle pill gradient */
+  @apply bg-rastaDark bg-opacity-70 backdrop-blur-lg rounded-full border border-rastaLight border-opacity-20 py-6 px-8 mx-4 my-6 flex items-center justify-between; /* Increased py-6 for height, added mx-4 for horizontal margin */
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1)); /* Slightly stronger gradient for visibility */
 }
 
 .nav-link {
@@ -35,10 +35,26 @@ body {
 }
 
 .rasta-card-gradient {
-  background-color: theme('colors.rastaCardBg'); /* Use the new rastaCardBg color */
-  @apply shadow-md hover:shadow-lg transition-shadow duration-300;
+  background-color: #000; /* Pitch black base color */
+  background-image: radial-gradient(circle at 50% 50%, rgba(224, 58, 62, 0.02) 0%, transparent 70%), /* Even more subtle red radial gradient (reduced opacity) */
+                     radial-gradient(circle at 50% 50%, rgba(247, 208, 70, 0.02) 15%, transparent 75%), /* Even more subtle yellow radial gradient (reduced opacity) */
+                     radial-gradient(circle at 50% 50%, rgba(52, 180, 74, 0.02) 30%, transparent 80%), /* Even more subtle green radial gradient (reduced opacity) */
+                     linear-gradient(to bottom, #111, #000); /* Darker linear gradient overlay */
+
+  /* border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border - REMOVED for cleaner look */
+  @apply shadow-md hover:shadow-lg transition-shadow duration-300 rounded-md flex flex-col items-center; /* Added rounded-md and flex-col for card layout and items-center */
 }
 
 .product-card-gradient {
-  background-image: linear-gradient(135deg, rgba(224, 58, 62, 0.04) 10%, rgba(247, 208, 70, 0.04) 50%, rgba(52, 180, 74, 0.04) 90%); /* Very subtle angled gradient */
+  /* background-image: linear-gradient(135deg, rgba(224, 58, 62, 0.06) 10%, rgba(247, 208, 70, 0.06) 50%, rgba(52, 180, 74, 0.06) 90%); /* Slightly increased opacity - REMOVED gradient completely */
+  background-color: transparent; /*  Transparent background for product cards for a cleaner look */
+}
+
+.product-card-title {
+    /* @apply font-rasta-banner-heading text-rastaYellow; /* Apply rasta banner font and yellow color - REMOVED */
+    @apply text-rastaYellow; /* Keep yellow color */
+}
+
+.product-card-readable-title {
+    @apply font-product-card-font text-rastaYellow; /* Apply new font and yellow color */
 }

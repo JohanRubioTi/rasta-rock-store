@@ -52,124 +52,133 @@ const ProductCatalog = () => {
 
 
   return (
-    <div className="bg-rastaDark min-h-screen relative overflow-hidden">
-      {/* ThreeDScene as full-page background - FIXED positioning, z-index: 0 - VARIANT 'catalog' */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
-        <ThreeDScene variant="catalog" />
-      </div>
+    <>
+      {/* THIS FRAGMENT IS CORRECTLY OPENED HERE */}
+      <div className="min-h-screen relative overflow-hidden"> {/* Removed bg-rastaDark from here */}
+        {/* ThreeDScene as full-page background - FIXED positioning, z-index: 0 - VARIANT 'catalog' */}
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
+          <ThreeDScene variant="catalog" />
+        </div>
 
-      {/* Animated Background - Gradient overlay, z-index: 1 - DIFFERENT GRADIENT DIRECTION */}
-      <div className="absolute inset-0 bg-gradient-to-b from-rastaRed via-rastaYellow to-rastaGreen opacity-90 animate-spotlight-move" style={{
+        {/* Animated Background - Gradient overlay, z-index: -1 (behind 3D scene) - DIFFERENT GRADIENT DIRECTION */}
+        <div className="absolute inset-0 bg-gradient-to-b from-rastaRed via-rastaYellow to-rastaGreen opacity-90 animate-spotlight-move" style={{
           backgroundSize: '200% 200%',
           filter: 'blur(100px)',
-          zIndex: 1 // Gradient overlay z-index: 1
-      }}></div>
+          zIndex: -1 // Gradient overlay z-index: -1 (behind 3D scene)
+        }}></div>
 
-      {/* Product Catalog Content - Relative positioning, z-index: 2 for content */}
-      <div className="relative z-10" style={{zIndex: 2}}>
-        {/* Navbar - Added to ProductCatalog.jsx, behind background */}
-        <nav className="navbar-pill sticky top-4 z-50 mx-auto w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center w-full"> {/* Always justify-between */}
-            {/* Brand - Centered if no categories, otherwise left */}
-            <div className={`${location.pathname === '/products' ? 'mx-auto' : ''}`}>
-              <Link to="/" className="text-2xl font-bold text-rastaGreen nav-link font-rasta-banner-heading">Rasta Rock</Link>
-            </div>
-
-
-            {/* Category Links - HIDDEN on Product Catalog */}
-            {location.pathname !== '/products' && (
-              <ul className="hidden md:flex space-x-6">
-                <li>
-                  <Link to="/products?category=accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios</Link>
-                </li>
-                <li>
-                  <Link to="/products?category=clothing" className="nav-link font-rasta-nav-links nav-link-normal-weight">Ropa</Link>
-                </li>
-                <li>
-                  <Link to="/products?category=smoke-accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios de Fumar</Link>
-                </li>
-                <li>
-                  <Link to="/products?category=handmade-decorations" className="nav-link font-rasta-nav-links nav-link-normal-weight">Decoración Artesanal</Link>
-                </li>
-                <li>
-                  <Link to="/products?category=piercings" className="nav-link font-rasta-nav-links nav-link-normal-weight">Piercings</Link>
-                </li>
-              </ul>
-            )}
-
-            {/* Bands and Admin (visible on larger screens) */}
-            <div className="hidden md:flex space-x-6">
-              <Link to="/bands" className="nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
-              <Link to="/admin" className="nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
-            </div>
-          </div>
-        </nav>
-
-        <div className="container mx-auto p-4">
-          {/* Back to Home Button */}
-          <div className="mb-4">
-            <Link to="/" className="bg-gray-700 hover:bg-gray-600 text-rastaLight font-bold py-2 px-4 rounded-full inline-flex items-center transition duration-300 rasta-button-gradient"> {/* Applied rasta-button-gradient */}
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
-              </svg>
-              Back to Home
-            </Link>
-          </div>
-
-          <h1 className="text-3xl font-bold mb-4 font-rasta-heading">Product Catalog</h1>
-
-          {/* Category Navigation */}
-          <div className="mb-4 flex space-x-4 overflow-x-auto">
-            {categories.map(category => (
-              <button
-                key={category}
-                className={`nav-link font-rasta-nav-links nav-link-normal-weight px-4 py-2 rounded-full rasta-button-gradient ${selectedCategory === category ? 'bg-opacity-90 text-rastaYellow' : 'bg-opacity-50 hover:bg-opacity-70'}`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
-              </button>
-            ))}
-          </div>
-
-          {/* Search and Sort */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div>
-              <select
-                className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen rasta-button-gradient"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="price-low-high">Price: Low to High</option>
-                <option value="price-high-low">Price: High to Low</option>
-              </select>
-            </div>
-          </div>
+        {/* Product Catalog Content - Relative positioning, z-index: 2 for content */}
+        <div className="relative z-10" style={{ zIndex: 2 }}>
+          {/* Navbar - Added to ProductCatalog.jsx, behind background */}
+          <div className="mx-4 sm:mx-6 lg:mx-8"> {/* Container for horizontal margin */}
+            <nav className="navbar-pill sticky top-4 z-50">
+              <div className="flex justify-between items-center w-full"> {/* Always justify-between */}
+                {/* Brand - Centered if no categories, otherwise left */}
+                <div className={`${location.pathname === '/products' ? 'mx-auto' : ''}`}>
+                  <Link to="/" className="text-2xl font-bold text-rastaGreen nav-link font-rasta-banner-heading">Rasta Rock</Link>
+                </div>
 
 
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {sortedProducts.map((product) => (
-              <div key={product.id} className="rasta-card-gradient p-4 rounded-lg shadow-md product-card-gradient"> {/* Applied product-card-gradient */}
-                <Link to={`/products/${product.id}`}>
-                  <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover mb-2 rounded" />
-                  <h2 className="text-lg font-semibold">{product.name}</h2>
-                  <p className="text-gray-400">{product.description.substring(0, 50)}...</p>
-                  <p className="text-rastaRed font-bold mt-2">${product.price}</p>
-                </Link>
+                {/* Category Links - HIDDEN on Product Catalog */}
+                {location.pathname !== '/products' && (
+                  <ul className="hidden md:flex space-x-6">
+                    <li>
+                      <Link to="/products?category=accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios</Link>
+                    </li>
+                    <li>
+                      <Link to="/products?category=clothing" className="nav-link font-rasta-nav-links nav-link-normal-weight">Ropa</Link>
+                    </li>
+                    <li>
+                      <Link to="/products?category=smoke-accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios de Fumar</Link>
+                    </li>
+                    <li>
+                      <Link to="/products?category=handmade-decorations" className="nav-link font-rasta-nav-links nav-link-normal-weight">Decoración Artesanal</Link>
+                    </li>
+                    <li>
+                      <Link to="/products?category=piercings" className="nav-link font-rasta-nav-links nav-link-normal-weight">Piercings</Link>
+                    </li>
+                  </ul>
+                )}
+
+                {/* Bands and Admin (visible on larger screens) */}
+                <div className="hidden md:flex space-x-6">
+                  <Link to="/bands" className="nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
+                  <Link to="/admin" className="nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
+                </div>
               </div>
-            ))}
+            </nav>
+          </div>
+
+          <div className="container mx-auto p-4">
+            {/* Back to Home Button */}
+            <div className="mb-4">
+              <Link to="/" className="bg-gray-700 hover:bg-gray-600 text-rastaLight font-bold py-2 px-4 rounded-full inline-flex items-center transition duration-300 rasta-button-gradient"> {/* Applied rasta-button-gradient */}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 mr-2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+                </svg>
+                Back to Home
+              </Link>
+            </div>
+
+            <h1 className="text-3xl font-bold mb-4 font-rasta-heading">Product Catalog</h1>
+
+            {/* Category Navigation */}
+            <div className="mb-4 flex space-x-4 overflow-x-auto">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  className={`nav-link font-rasta-nav-links nav-link-normal-weight px-4 py-2 rounded-full rasta-button-gradient ${selectedCategory === category ? 'bg-opacity-90 text-rastaYellow' : 'bg-opacity-50 hover:bg-opacity-70'}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+                </button>
+              ))}
+            </div>
+
+            {/* Search and Sort */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div>
+                <select
+                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen rasta-button-gradient"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="price-low-high">Price: Low to High</option>
+                  <option value="price-high-low">Price: High to Low</option>
+                </select>
+              </div>
+            </div>
+
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {sortedProducts.map((product) => (
+                <div key={product.id} className="rasta-card-gradient rounded-md text-rastaLight hover:shadow-lg hover:bg-gray-600 transition duration-300 flex flex-col"> {/* Flex column layout */}
+                  <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" /> {/* Increased image height and margin */}
+                  <div className="px-4 py-2 flex flex-col justify-between flex-grow"> {/* Reduced padding, px-4 py-2 */}
+                    <div>
+                      <h2 className="product-card-title text-lg mb-1">{product.name}</h2> {/* Product Name with new class */}
+                      <p className="text-rastaRed font-bold">${product.price}</p>
+                    </div>
+                    <Link to={`/products/${product.id}`} className="rasta-button-gradient font-bold py-1 px-3 rounded-full text-xs uppercase tracking-wider transition duration-300 inline-block self-start mt-2"> {/* Smaller button and margin */}
+                      View
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
