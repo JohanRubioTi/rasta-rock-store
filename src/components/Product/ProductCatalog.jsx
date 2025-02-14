@@ -1,39 +1,37 @@
-import React, { useState, useEffect } from 'react'; // Import useEffect
-import { Link, useLocation, useSearchParams } from 'react-router-dom'; // Import useSearchParams and useLocation
-import ThreeDScene from '../ThreeDScene'; // Corrected import path (assuming ThreeDScene is in src/components)
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import ThreeDScene from '../ThreeDScene';
 
 const ProductCatalog = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Declare isDropdownOpen state
-  const [searchParams, setSearchParams] = useSearchParams(); // Get search params
-  const location = useLocation(); // Get current location
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const productsData = [
-    { id: 1, name: 'Rasta Beanie', description: 'Warm and stylish Rasta beanie.', price: 25, imageUrl: 'https://via.placeholder.com/150', category: 'clothing' },
-    { id: 2, name: 'Bob Marley Tee', description: 'Classic Bob Marley t-shirt.', price: 30, imageUrl: 'https://via.placeholder.com/150', category: 'clothing' },
-    { id: 3, name: 'Peace Sign Necklace', description: 'Elegant peace sign necklace.', price: 15, imageUrl: 'https://via.placeholder.com/150', category: 'accessories' },
-    { id: 4, name: 'Rasta Bracelet Set', description: 'Colorful Rasta bracelet set.', price: 20, imageUrl: 'https://via.placeholder.com/150', category: 'accessories' },
-    { id: 5, name: 'Rolling Papers - King Size', description: 'King size rolling papers.', price: 5, imageUrl: 'https://via.placeholder.com/150', category: 'smoke-accessories' },
-    { id: 6, name: 'Herb Grinder', description: 'High-quality herb grinder.', price: 35, imageUrl: 'https://via.placeholder.com/150', category: 'smoke-accessories' },
-    { id: 7, name: 'Handmade Rasta Coasters', description: 'Set of handmade Rasta coasters.', price: 22, imageUrl: 'https://via.placeholder.com/150', category: 'handmade-decorations' },
-    { id: 8, name: 'Rasta Wall Hanging', description: 'Vibrant Rasta wall decoration.', price: 40, imageUrl: 'https://via.placeholder.com/150', category: 'handmade-decorations' },
-    { id: 9, name: 'Nose Piercing - Gold', description: 'Gold nose piercing.', price: 18, imageUrl: 'https://via.placeholder.com/150', category: 'piercings' },
-    { id: 10, name: 'Ear Piercing - Silver Hoops', description: 'Silver hoop ear piercings.', price: 28, imageUrl: 'https://via.placeholder.com/150', category: 'piercings' },
+    { id: 1, name: 'Gorro Rasta', description: 'Gorro Rasta cálido y estiloso.', price: 25, imageUrl: 'https://via.placeholder.com/150', category: 'clothing' },
+    { id: 2, name: 'Camiseta Bob Marley', description: 'Camiseta clásica de Bob Marley.', price: 30, imageUrl: 'https://via.placeholder.com/150', category: 'clothing' },
+    { id: 3, name: 'Collar Signo de la Paz', description: 'Elegante collar con signo de la paz.', price: 15, imageUrl: 'https://via.placeholder.com/150', category: 'accessories' },
+    { id: 4, name: 'Set de Pulseras Rasta', description: 'Set de pulseras Rasta coloridas.', price: 20, imageUrl: 'https://via.placeholder.com/150', category: 'accessories' },
+    { id: 5, name: 'Papel de Liar - Tamaño King', description: 'Papel de liar tamaño king.', price: 5, imageUrl: 'https://via.placeholder.com/150', category: 'smoke-accessories' },
+    { id: 6, name: 'Grinder de Hierbas', description: 'Grinder de hierbas de alta calidad.', price: 35, imageUrl: 'https://via.placeholder.com/150', category: 'smoke-accessories' },
+    { id: 7, name: 'Posavasos Rasta Hechos a Mano', description: 'Set de posavasos Rasta hechos a mano.', price: 22, imageUrl: 'https://via.placeholder.com/150', category: 'handmade-decorations' },
+    { id: 8, name: 'Tapiz Rasta', description: 'Vibrante decoración de pared Rasta.', price: 40, imageUrl: 'https://via.placeholder.com/150', category: 'handmade-decorations' },
+    { id: 9, name: 'Piercing de Nariz - Oro', description: 'Piercing de nariz de oro.', price: 18, imageUrl: 'https://via.placeholder.com/150', category: 'piercings' },
+    { id: 10, name: 'Piercing de Oreja - Aros de Plata', description: 'Piercings de oreja de aros de plata.', price: 28, imageUrl: 'https://via.placeholder.com/150', category: 'piercings' },
   ];
 
   const categories = ['all', 'accessories', 'clothing', 'smoke-accessories', 'handmade-decorations', 'piercings'];
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('price-low-high'); // Default sorting
+  const [sortBy, setSortBy] = useState('price-low-high');
 
   useEffect(() => {
     const urlCategory = searchParams.get('category');
     if (urlCategory && categories.includes(urlCategory)) {
       setSelectedCategory(urlCategory);
     } else {
-      setSelectedCategory('all'); // Default to 'all' if category is invalid or not present
+      setSelectedCategory('all');
     }
-  }, [searchParams]); // useEffect dependency on searchParams
-
+  }, [searchParams]);
 
   const filteredProducts = productsData.filter(product => {
     const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
@@ -50,36 +48,27 @@ const ProductCatalog = () => {
     return 0;
   });
 
-
   return (
     <>
-      {/* THIS FRAGMENT IS CORRECTLY OPENED HERE */}
-      <div className="min-h-screen relative overflow-hidden"> {/* Removed bg-rastaDark from here */}
-        {/* ThreeDScene as full-page background - FIXED positioning, z-index: 0 - VARIANT 'catalog' */}
+      <div className="min-h-screen relative overflow-hidden">
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}>
-          <ThreeDScene variant="catalog" />
+          <ThreeDScene variant="grid" />
         </div>
 
-        {/* Animated Background - Gradient overlay, z-index: -1 (behind 3D scene) - DIFFERENT GRADIENT DIRECTION */}
         <div className="absolute inset-0 bg-gradient-to-b from-rastaRed via-rastaYellow to-rastaGreen opacity-90 animate-spotlight-move" style={{
           backgroundSize: '200% 200%',
           filter: 'blur(100px)',
-          zIndex: -1 // Gradient overlay z-index: -1 (behind 3D scene)
+          zIndex: -1
         }}></div>
 
-        {/* Product Catalog Content - Relative positioning, z-index: 2 for content */}
         <div className="relative z-10" style={{ zIndex: 2 }}>
-          {/* Navbar - Added to ProductCatalog.jsx, behind background */}
-          <div className="mx-4 sm:mx-6 lg:mx-8"> {/* Container for horizontal margin */}
+          <div className="mx-4 sm:mx-6 lg:mx-8">
             <nav className="navbar-pill sticky top-4 z-50">
-              <div className="flex justify-between items-center w-full"> {/* Always justify-between */}
-                {/* Brand - Centered if no categories, otherwise left */}
+              <div className="flex justify-between items-center w-full">
                 <div className={`${location.pathname === '/products' ? 'mx-auto' : ''}`}>
                   <Link to="/" className="text-2xl font-bold text-rastaGreen nav-link font-rasta-banner-heading">Rasta Rock</Link>
                 </div>
 
-
-                {/* Category Links - HIDDEN on Product Catalog */}
                 {location.pathname !== '/products' && (
                   <ul className="hidden md:flex space-x-6">
                     <li>
@@ -100,7 +89,6 @@ const ProductCatalog = () => {
                   </ul>
                 )}
 
-                {/* Bands and Admin (visible on larger screens) */}
                 <div className="hidden md:flex space-x-6">
                   <Link to="/bands" className="nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
                   <Link to="/admin" className="nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
@@ -110,67 +98,75 @@ const ProductCatalog = () => {
           </div>
 
           <div className="container mx-auto p-4">
-            {/* Back to Home Button */}
             <div className="mb-4">
-              <Link to="/" className="bg-gray-700 hover:bg-gray-600 text-rastaLight font-bold py-2 px-4 rounded-full inline-flex items-center transition duration-300 rasta-button-gradient"> {/* Applied rasta-button-gradient */}
+              <Link to="/" className="back-to-home-button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 mr-2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
                 </svg>
-                Back to Home
+                Volver a Inicio
               </Link>
             </div>
 
-            <h1 className="text-3xl font-bold mb-4 font-rasta-heading">Product Catalog</h1>
+            <h1 className="text-3xl font-bold mb-4 font-rasta-heading">Catálogo de Productos</h1>
 
-            {/* Category Navigation */}
             <div className="mb-4 flex space-x-4 overflow-x-auto">
               {categories.map(category => (
                 <button
                   key={category}
-                  className={`nav-link font-rasta-nav-links nav-link-normal-weight px-4 py-2 rounded-full rasta-button-gradient ${selectedCategory === category ? 'bg-opacity-90 text-rastaYellow' : 'bg-opacity-50 hover:bg-opacity-70'}`}
+                  className={`filter-button ${selectedCategory === category ? 'filter-button-active' : ''}`}
                   onClick={() => setSelectedCategory(category)}
                 >
-                  {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+                  {category === 'all' ? 'Todos' :
+                    category === 'accessories' ? 'Accesorios' :
+                      category === 'clothing' ? 'Ropa' :
+                        category === 'smoke-accessories' ? 'Accesorios de Fumar' :
+                          category === 'handmade-decorations' ? 'Decoración Artesanal' :
+                            category === 'piercings' ? 'Piercings' : ''}
                 </button>
               ))}
             </div>
 
-            {/* Search and Sort */}
             <div className="flex justify-between items-center mb-4">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder="Buscar productos..."
                   className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <div>
                 <select
-                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen rasta-button-gradient"
+                  className="price-filter-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  <option value="price-low-high">Price: Low to High</option>
-                  <option value="price-high-low">Price: High to Low</option>
+                  <option value="price-low-high">Precio: Bajo a Alto</option>
+                  <option value="price-high-low">Precio: Alto a Bajo</option>
                 </select>
               </div>
             </div>
 
-
-            {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {sortedProducts.map((product) => (
-                <div key={product.id} className="rasta-card-gradient rounded-md text-rastaLight hover:shadow-lg hover:bg-gray-600 transition duration-300 flex flex-col"> {/* Flex column layout */}
-                  <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" /> {/* Increased image height and margin */}
-                  <div className="px-4 py-2 flex flex-col justify-between flex-grow"> {/* Reduced padding, px-4 py-2 */}
+                <div key={product.id} className="rasta-card-gradient rounded-md text-rastaLight hover:shadow-lg hover:bg-gray-600 transition duration-300 flex flex-col">
+                  <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" />
+                  <div className="px-4 py-2 flex flex-col justify-between flex-grow">
                     <div>
-                      <h2 className="product-card-title text-lg mb-1">{product.name}</h2> {/* Product Name with new class */}
+                      <h2 className="product-card-title text-lg mb-1">{product.name}</h2>
                       <p className="text-rastaRed font-bold">${product.price}</p>
                     </div>
-                    <Link to={`/products/${product.id}`} className="rasta-button-gradient font-bold py-1 px-3 rounded-full text-xs uppercase tracking-wider transition duration-300 inline-block self-start mt-2"> {/* Smaller button and margin */}
-                      View
-                    </Link>
+                    {/* Button Container for Consistent Alignment */}
+                    <div className="mt-2 flex items-center justify-between">
+                      <Link to={`/products/${product.id}`} className="view-button">
+                        Ver
+                      </Link>
+                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-2 px-3 rounded-full transition duration-300 flex items-center justify-center"> {/* Increased padding */}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
