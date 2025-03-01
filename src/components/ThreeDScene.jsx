@@ -209,7 +209,7 @@ const ThreeDScene = ({ variant }) => {
 
     const onWheel = (event) => {
       if (camera) {
-        camera.position.z += event.deltaY * 0.05;
+        camera.position.z -= event.deltaY * 0.05;
         camera.position.z = Math.max(10, Math.min(variant === 'original' ? 40 : 30, camera.position.z));
       }
     };
@@ -225,13 +225,13 @@ const ThreeDScene = ({ variant }) => {
       textMesh.material.transparent = true;
 
       // Rotate torus
-      group.rotation.y = scrollY * 0.01; // Adjust 0.01 for rotation speed
+      group.rotation.y = -scrollY * 0.01; // Invert rotation direction
 
       group.children.forEach((mesh) => {
         const wobbleX = Math.sin(scrollY * 0.01 + mesh.rotation.x) * 0.5;
         const wobbleY = Math.cos(scrollY * 0.01 + mesh.rotation.y) * 0.5;
-        mesh.rotation.x += wobbleX * 0.05;
-        mesh.rotation.y += wobbleY * 0.05;
+        mesh.rotation.x -= wobbleX * 0.05; // Invert wobble direction
+        mesh.rotation.y -= wobbleY * 0.05; // Invert wobble direction
       });
     };
 
@@ -277,11 +277,19 @@ const ThreeDScene = ({ variant }) => {
         group.rotation.y = clock.getElapsedTime() * 0.05;
       }
 
-      if (camera) {
-        camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
-        updateCameraPosition();
-      }
-      renderer.render(scene, camera);
+   if (camera) {
+         camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
+         updateCameraPosition();
+   }
+   if (textMesh) {
+         const currentScroll = window.scrollY;
+         const newOpacity = Math.max(1 - currentScroll / 200, 0);
+         textMesh.material.opacity = newOpacity;
+         textMesh.material.transparent = true;
+         textMesh.material.needsUpdate = true;
+         textMesh.scale.set(1, 1, 1);
+   }
+   renderer.render(scene, camera);
       requestAnimationFrame(animate);
     };
 
