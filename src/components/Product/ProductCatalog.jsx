@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import Navbar from '../Navbar';
 import ThreeDScene from '../ThreeDScene';
 
 const ProductCatalog = () => {
@@ -62,40 +63,7 @@ const ProductCatalog = () => {
         }}></div>
 
         <div className="relative z-10" style={{ zIndex: 2 }}>
-          <div className="mx-4 sm:mx-6 lg:mx-8">
-            <nav className="navbar-pill sticky top-4 z-50">
-              <div className="flex justify-between items-center w-full">
-                <div className={`${location.pathname === '/products' ? 'mx-auto' : ''}`}>
-                  <Link to="/" className="text-2xl font-bold text-rastaGreen nav-link font-rasta-banner-heading">Rasta Rock</Link>
-                </div>
-
-                {location.pathname !== '/products' && (
-                  <ul className="hidden md:flex space-x-6">
-                    <li>
-                      <Link to="/products?category=accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios</Link>
-                    </li>
-                    <li>
-                      <Link to="/products?category=clothing" className="nav-link font-rasta-nav-links nav-link-normal-weight">Ropa</Link>
-                    </li>
-                    <li>
-                      <Link to="/products?category=smoke-accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios de Fumar</Link>
-                    </li>
-                    <li>
-                      <Link to="/products?category=handmade-decorations" className="nav-link font-rasta-nav-links nav-link-normal-weight">Decoración Artesanal</Link>
-                    </li>
-                    <li>
-                      <Link to="/products?category=piercings" className="nav-link font-rasta-nav-links nav-link-normal-weight">Piercings</Link>
-                    </li>
-                  </ul>
-                )}
-
-                <div className="hidden md:flex space-x-6">
-                  <Link to="/bands" className="nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
-                  <Link to="/admin" className="nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
-                </div>
-              </div>
-            </nav>
-          </div>
+          <Navbar />
 
           <div className="container mx-auto p-4">
             <div className="mb-4">

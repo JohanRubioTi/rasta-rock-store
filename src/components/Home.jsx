@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
 import ThreeDScene from './ThreeDScene';
 
 const Home = () => {
@@ -20,120 +21,62 @@ const Home = () => {
   const featuredProducts = productsData.slice(0, 8);
 
   return (
-    <>
-      <div className="min-h-screen relative overflow-hidden">
-        {/* Contenedor de Fondo */}
-        <div className="absolute inset-0">
+    <div className="relative overflow-x-hidden">
+      {/* Fondo Animado - Superposición de Gradiente - Moved to outer div */}
+      <div className="absolute inset-0 opacity-95 animate-rasta-radial" style={{
+        backgroundImage: 'radial-gradient(circle at center, #E03A3E, #F7D046, #34B44A, #F7D046, #E03A3E)',
+        backgroundSize: '300% 300%',
+        filter: 'blur(50px)',
+        zIndex: -1
+      }}></div>
+
+      <div className="min-h-screen relative">
+        {/* Navbar */}
+        <Navbar />
+
+        {/* ThreeDScene as the background */}
+        <div className="fixed inset-0">
           <ThreeDScene variant="original" />
-          {/* Fondo Animado - Superposición de Gradiente */}
-          <div className="absolute inset-0 bg-gradient-to-r from-rastaRed via-rastaYellow to-rastaGreen opacity-90 animate-spotlight-move" style={{
-            backgroundSize: '200% 200%',
-            filter: 'blur(100px)',
-            zIndex: -1
-          }}></div>
         </div>
 
-        {/* Contenedor del Banner Principal - Posicionamiento relativo, z-index: 2 para el contenido */}
-        <div className="relative z-10" style={{ zIndex: 2 }}>
-          {/* Barra de Navegación */}
-          <div className="mx-4 sm:mx-6 lg:mx-8">
-            <nav className="navbar-pill sticky top-4 z-50">
-              <div className="flex justify-between items-center w-full">
-                {/* Marca */}
-                <Link to="/" className="text-2xl font-bold text-rastaGreen nav-link font-rasta-banner-heading">Rasta Rock</Link>
-
-                {/* Enlaces de Categoría - Visibles en la Página de Inicio */}
-                <ul className="hidden md:flex space-x-6">
-                  <li>
-                    <Link to="/products?category=accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios</Link>
-                  </li>
-                  <li>
-                    <Link to="/products?category=clothing" className="nav-link font-rasta-nav-links nav-link-normal-weight">Ropa</Link>
-                  </li>
-                  <li>
-                    <Link to="/products?category=smoke-accessories" className="nav-link font-rasta-nav-links nav-link-normal-weight">Accesorios de Fumar</Link>
-                  </li>
-                  <li>
-                    <Link to="/products?category=handmade-decorations" className="nav-link font-rasta-nav-links nav-link-normal-weight">Decoración Artesanal</Link>
-                  </li>
-                  <li>
-                    <Link to="/products?category=piercings" className="nav-link font-rasta-nav-links nav-link-normal-weight">Piercings</Link>
-                  </li>
-                </ul>
-
-                {/* Desplegable (para pantallas más pequeñas) */}
-                <div className="md:hidden relative">
-                  <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="nav-link focus:outline-none font-rasta-nav-links nav-link-normal-weight">
-                    ☰
-                  </button>
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-rastaDark rounded-md shadow-lg py-1">
-                      <Link to="/products" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links nav-link-normal-weight">Categorías</Link>
-                      <Link to="/bands" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
-                      <Link to="/admin" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bandas y Admin (visibles en pantallas más grandes) */}
-                <div className="hidden md:flex space-x-6">
-                  <Link to="/bands" className="nav-link font-rasta-nav-links nav-link-normal-weight">Bandas</Link>
-                  <Link to="/admin" className="nav-link font-rasta-nav-links nav-link-normal-weight">Admin</Link>
-                </div>
-              </div>
-            </nav>
-          </div>
-
-          {/* Banner Principal */}
-          <div className="container mx-auto p-8 text-center relative overflow-hidden" style={{ zIndex: 2 }}>
-            {/* Contenido del Banner Principal */}
-            <div className="relative z-10">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-rastaLight uppercase tracking-wider leading-none font-rasta-banner-heading">
-                <span className="block text-shadow-rasta">¡Vibra Alto!</span>
-                <span className="block text-shadow-rasta">Con Rasta Rock</span>
-              </h1>
-              <p className="text-lg md:text-xl lg:text-2xl text-rastaLight mt-4 mb-10 text-shadow">
-                Encuentra los accesorios y la moda más auténtica.
-              </p>
-              <a href="/products" className="rasta-button-gradient font-bold py-4 px-10 rounded-full text-lg uppercase tracking-wider transition duration-300">
-                Explora Ahora
-              </a>
+        {/* Subheader and CTA */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+            <div className="container mx-auto p-8 text-center">
+                <p className="text-lg md:text-xl lg:text-2xl text-rastaLight mt-4 mb-8 text-shadow">
+                    Encuentra los accesorios y la moda más auténtica.
+                </p>
+                <a href="/products" className="cta-button rasta-button-gradient font-bold py-4 px-10 rounded-full text-lg uppercase tracking-wider transition duration-300">
+                    Explora Ahora
+                </a>
             </div>
-          </div>
-
-          {/* Nueva Sección - Novedades y Destacados */}
-          <div className="container mx-auto p-4" style={{ zIndex: 2 }}>
-            <div className="relative rounded-lg overflow-hidden shadow-lg bg-opacity-70" style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4))'
-            }}>
-              <div className="relative z-10 p-6">
-                <h2 className="text-3xl font-bold text-rastaLight mb-4 text-shadow font-rasta-heading text-center text-rastaYellow">Descubre lo Nuevo y lo Más Deseado</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                  {featuredProducts.map((product) => (
-                    <div key={product.id} className="rasta-card-gradient rounded-md text-rastaLight hover:shadow-lg transition duration-300 flex flex-col items-center">
-                      <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" />
-                      <div className="px-4 py-2 flex flex-col justify-between flex-grow text-center">
-                        <div>
-                          <h2 className="product-card-readable-title text-lg mb-1">{product.name}</h2>
-                          <p className="text-rastaRed font-bold">${product.price}</p>
-                        </div>
-                        {/* Button Container for Consistent Alignment */}
-                        <div className="mt-2">
-                        <Link to={`/products/${product.id}`} className="bg-rastaGreen-500 hover:bg-rastaGreen-700 text-white font-bold py-2 px-4 rounded-full text-sm uppercase tracking-wider transition duration-300 inline-block mt-2">
-                          Ver
-                        </Link>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-    </>
+      <section className="py-12 bg-transparent"> {/* bg-white removed and bg-transparent added */}
+        <div className="container mx-auto px-4">
+          <h2 className="text-right font-bold text-3xl uppercase">
+            Exclusivo<br/>Colombia
+          </h2>
+        </div>
+        <div className="container mx-auto px-8 mt-8 grid grid-cols-1 md:grid-cols-4 gap-6"> {/* px-4 changed to px-8 */}
+          {featuredProducts.map((product) => (
+                <Link to={`/products/${product.id}`} key={product.id} className="block mx-2 md:mx-4 transform hover:scale-105 transition duration-300 w-full max-w-xs"> {/* Responsive width w-full max-w-xs added */}
+                  <div className="rasta-card-gradient rounded-md hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner">
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" />
+                    <div className="px-4 py-2 flex flex-col items-center justify-center flex-grow text-center">
+                        <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
+                        <p className="font-bold text-gray-300">${product.price}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+        </div>
+      </section>
+      <section className="py-4 bg-transparent text-center">
+        <p className="text-lg md:text-xl lg:text-2xl text-white mt-2 mb-4 text-shadow">
+          ¡Aprovecha ofertas exclusivas en Colombia y renueva tu estilo hoy!
+        </p>
+      </section>
+    </div>
   );
 };
 

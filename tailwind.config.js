@@ -31,11 +31,10 @@
               '0%, 100%': { backdropFilter: 'blur(10px)' },
               '50%': { backdropFilter: 'blur(15px)' },
             },
-            'spotlight-move': {
-              '0%': { backgroundPosition: '0% 50%' },
-              '50%': { backgroundPosition: '100% 50%' },
-              '100%': { backgroundPosition: '0% 50%'},
-            }
+            'rasta-radial': {
+              '0%, 100%': { backgroundPosition: '0% 50%', backgroundSize: '250% 250%' },
+              '50%': { backgroundPosition: '200% 50%', backgroundSize: '400% 400%' },
+            },
           },
         },
       },

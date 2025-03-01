@@ -1,324 +1,356 @@
 import React, { useEffect, useRef } from 'react';
-    import * as THREE from 'three';
-    import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import * as THREE from 'three';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
-    const ThreeDScene = ({ variant }) => {
-      const mountRef = useRef(null);
+const ThreeDScene = ({ variant }) => {
+  const mountRef = useRef(null);
 
-      useEffect(() => {
-        // === Original Scene Setup (Enhanced) ===
-        const initOriginalScene = () => {
-          const scene = new THREE.Scene();
-          const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-          const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // Enable transparency and antialiasing
-          renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-          renderer.setClearColor(0x000000, 0); // Set clear color to transparent
-          renderer.toneMapping = THREE.ACESFilmicToneMapping; // Use a more cinematic tone mapping
-          renderer.toneMappingExposure = 1; // Adjust exposure as needed
-          mountRef.current.appendChild(renderer.domElement);
+  useEffect(() => {
+    console.log(`ThreeDScene rendering with variant: ${variant}`);
+    let scene, camera, renderer, group, textMesh, clock;
+    let materials = [];
+    let loadedTexture = null; // Store loaded texture
+    let loadedFont = null; // Store loaded font
+    let shaderMaterial;
+    const rastaColors = [0x00ff00, 0xffff00, 0xff0000];
 
-          const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+    const initScene = () => {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(
+        variant === 'original' ? 50 : 75,
+        window.innerWidth / (window.innerHeight - (variant === 'original' ? 100 : 0)),
+        0.1,
+        1000
+      );
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-          const rastaColors = [0x00ff00, 0xffff00, 0xff0000]; // Green, Yellow, Red
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1;
 
-          // Load an HDRI environment map
-          new RGBELoader()
-            .setPath('/textures/') // Path to the textures folder
-            .load('studio_small_08_1k.hdr', function (texture) { // Use a suitable HDRI file name
-              texture.mapping = THREE.EquirectangularReflectionMapping;
-              scene.environment = texture;
+      if (mountRef.current) {
+        mountRef.current.appendChild(renderer.domElement);
+      }
 
-              // Create materials with environment mapping
-              const materials = rastaColors.map(color => new THREE.MeshStandardMaterial({
-                color: color,
-                metalness: 0.6, // Make it slightly metallic
-                roughness: 0.4, // Adjust roughness
-                envMap: texture, // Apply the environment map
-                transparent: true,
-                opacity: 0.8, // Initial opacity
-              }));
+      clock = new THREE.Clock();
 
-              const group = new THREE.Group();
-              materials.forEach((material, index) => {
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.rotation.x = 0.5 * index;
-                mesh.rotation.y = 0.3 * index;
-                group.add(mesh);
-              });
+      // Load resources asynchronously
+      const fontLoader = new FontLoader();
+      fontLoader.load('public/Great Vibes_Regular.json', (font) => {
+        loadedFont = font;
+        if (variant === 'original') createText(); // Create text if original variant
+      });
 
-              scene.add(group);
+      new RGBELoader()
+        .setPath('/textures/')
+        .load('studio_small_08_1k.hdr', (texture) => {
+          loadedTexture = texture;
+          loadedTexture.mapping = THREE.EquirectangularReflectionMapping;
+          if (variant === 'original') createTorus(); // Create torus if original variant
+        });
 
-              // Add subtle lighting
-              const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white ambient light
-              scene.add(ambientLight);
+      if (variant === 'original') {
+        // Lighting for original scene
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
-              const pointLight1 = new THREE.PointLight(0xffffff, 0.8); // Point light
-              pointLight1.position.set(5, 10, 15);
-              scene.add(pointLight1);
+        const pointLight1 = new THREE.PointLight(0xffffff, 0.8);
+        pointLight1.position.set(5, 10, 15);
+        scene.add(pointLight1);
 
-              const pointLight2 = new THREE.PointLight(0xffffff, 0.5); // Another point light
-              pointLight2.position.set(-5, -10, -15);
-              scene.add(pointLight2);
+        const pointLight2 = new THREE.PointLight(0xffffff, 0.5);
+        pointLight2.position.set(-5, -10, -15);
+        scene.add(pointLight2);
 
-              camera.position.z = 30;
-
-              const clock = new THREE.Clock();
-              let mouseX = 0;
-              let mouseY = 0;
-              const targetLookAt = new THREE.Vector3(0, 0, 0); // Center of the scene
-              const damping = 0.025; // Adjust for smoother camera movement (reduced damping)
-
-              const onMouseMove = (event) => {
-                mouseX = (event.clientX / window.innerWidth) - 0.5;
-                mouseY = (event.clientY / window.innerHeight) - 0.5;
-              };
-
-              const onTouchMove = (event) => {
-                // Use only the first touch point
-                if (event.touches.length > 0) {
-                  mouseX = (event.touches[0].clientX / window.innerWidth) - 0.5;
-                  mouseY = (event.touches[0].clientY / window.innerHeight) - 0.5;
-                }
-              };
-
-              const onWheel = (event) => {
-                camera.position.z += event.deltaY * 0.05; // Adjust zoom speed (slower zoom)
-                camera.position.z = Math.max(20, Math.min(40, camera.position.z)); // Limit zoom range (refined limits)
-              };
-
-              const updateCameraPosition = () => {
-                // Calculate camera offset based on mouse/touch position
-                const cameraOffset = new THREE.Vector3(
-                  mouseX * 8, // Scale the horizontal movement (reduced scale)
-                  0,         // No vertical movement
-                  mouseY * 8  // Scale the depth movement (reduced scale)
-                );
-
-                // Add the offset to the target look-at position
-                targetLookAt.copy(new THREE.Vector3(0, 0, 0).add(cameraOffset));
-              };
-
-              window.addEventListener('mousemove', onMouseMove);
-              window.addEventListener('touchmove', onTouchMove);
-              window.addEventListener('wheel', onWheel); // Add mouse wheel event listener
-
-              const animate = () => {
-                requestAnimationFrame(animate);
-
-                const delta = clock.getDelta();
-
-                // Rotate each torus individually (slower rotation)
-                group.children.forEach((mesh, index) => {
-                  mesh.rotation.x += 0.2 * delta;
-                  mesh.rotation.y += 0.1 * delta;
-
-                  // Dynamic opacity
-                  const time = clock.elapsedTime + index * 10; // Offset time for each torus
-                  mesh.material.opacity = 0.8 + Math.sin(time) * 0.1; // Pulsate opacity between 0.7 and 0.9
-                });
-
-                // Smoothly interpolate the camera's lookAt position
-                camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
-
-                // Update camera position based on mouse/touch input
-                updateCameraPosition();
-
-                renderer.render(scene, camera);
-              };
-
-              animate();
-
-              const handleResize = () => {
-                camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-              };
-
-              window.addEventListener('resize', handleResize);
-
-              return () => {
-                window.removeEventListener('mousemove', onMouseMove);
-                window.removeEventListener('touchmove', onTouchMove);
-                window.removeEventListener('wheel', onWheel);
-                window.removeEventListener('resize', handleResize);
-                if (mountRef.current) {
-                  mountRef.current.removeChild(renderer.domElement);
-                }
-                renderer.dispose();
-                materials.forEach(material => material.dispose());
-                geometry.dispose();
-                texture.dispose();
-              };
-            });
-        };
-
-        // === Grid Scene Setup (Product Catalog) === (No changes here)
-        const initGridScene = () => {
-          const scene = new THREE.Scene();
-          const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-          const renderer = new THREE.WebGLRenderer({ alpha: true });
-          renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-          renderer.setClearColor(0x000000, 0);
-          mountRef.current.appendChild(renderer.domElement);
-
-          const gridSize = 10; // Number of cubes in each dimension
-          const cubeSize = 1;
-          const spacing = 1.2; // Spacing between cubes
-
-          // Shader Materials
-          const vertexShader = `
-            varying vec3 vPosition;
-            void main() {
-              vPosition = position;
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-          `;
-
-          const fragmentShader = `
-            uniform float time;
-            varying vec3 vPosition;
-
-            void main() {
-              vec3 color = vec3(0.0);
-              float pulse = sin(time + vPosition.x * 0.5 + vPosition.y * 0.5 + vPosition.z * 0.5) * 0.2 + 0.8; // Pulsation effect
-
-              // Assign Rasta colors based on position
-              if (int(mod(vPosition.x + vPosition.y + vPosition.z, 3.0)) == 0) {
-                color = vec3(1.0, 0.0, 0.0); // Red
-              } else if (int(mod(vPosition.x + vPosition.y + vPosition.z, 3.0)) == 1) {
-                color = vec3(1.0, 1.0, 0.0); // Yellow
-              } else {
-                color = vec3(0.0, 1.0, 0.0); // Green
-              }
-
-              gl_FragColor = vec4(color * pulse, 0.2); // Apply pulsation and transparency
-            }
-          `;
-
-          const shaderMaterial = new THREE.ShaderMaterial({
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            transparent: true,
-            uniforms: {
-              time: { value: 0 },
-            },
-          });
-
-          const group = new THREE.Group(); // Group to hold all cubes
-
-          for (let x = 0; x < gridSize; x++) {
-            for (let y = 0; y < gridSize; y++) {
-              for (let z = 0; z < gridSize; z++) {
-                const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                const mesh = new THREE.Mesh(geometry, shaderMaterial);
-                mesh.position.set(
-                  (x - gridSize / 2) * spacing,
-                  (y - gridSize / 2) * spacing,
-                  (z - gridSize / 2) * spacing
-                );
-                group.add(mesh);
-              }
-            }
-          }
-
-          scene.add(group);
-
-          camera.position.set(15, 10, 20); // Initial camera position
-          camera.lookAt(0, 0, 0);
-
-          const clock = new THREE.Clock();
-          let mouseX = 0;
-          let mouseY = 0;
-          let touchX = 0;
-          let touchY = 0;
-          const targetLookAt = new THREE.Vector3(0, 0, 0);
-          const damping = 0.025;
-
-          const onMouseMove = (event) => {
-            mouseX = (event.clientX / window.innerWidth) - 0.5;
-            mouseY = (event.clientY / window.innerHeight) - 0.5;
-          };
-
-          const onTouchMove = (event) => {
-            touchX = (event.touches[0].clientX / window.innerWidth) - 0.5;
-            touchY = (event.touches[0].clientY / window.innerHeight) - 0.5;
-          };
-
-          const onWheel = (event) => {
-            camera.position.z += event.deltaY * 0.05; // Control zoom speed - Increased for more noticeable zoom
-            camera.position.z = Math.max(10, Math.min(30, camera.position.z)); // Limit zoom range - Adjusted for new camera position
-          };
-
-          const updateCameraPosition = () => {
-            const cameraOffset = new THREE.Vector3(
-              mouseX * 5,
-              0,
-              mouseY * 5
-            );
-            targetLookAt.copy(new THREE.Vector3(0, 0, 0).add(cameraOffset));
-          };
-
-          window.addEventListener('mousemove', onMouseMove);
-          window.addEventListener('touchmove', onTouchMove);
-          window.addEventListener('wheel', onWheel);
-
-          const animate = () => {
-            requestAnimationFrame(animate);
-
-            // Update shader uniform for pulsation
-            shaderMaterial.uniforms.time.value = clock.getElapsedTime();
-
-            // Rotate the entire grid slowly
-            group.rotation.y = clock.getElapsedTime() * 0.05;
-
-            camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
-            updateCameraPosition();
-            renderer.render(scene, camera);
-          };
-
-          animate();
-
-          const handleResize = () => {
-            camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-          };
-
-          window.addEventListener('resize', handleResize);
-
-          return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('touchmove', onTouchMove);
-            window.removeEventListener('wheel', onWheel);
-            window.removeEventListener('resize', handleResize);
-            if (mountRef.current) {
-              mountRef.current.removeChild(renderer.domElement);
-            }
-            renderer.dispose();
-            shaderMaterial.dispose();
-            // Dispose of each geometry in the group
-            group.children.forEach(child => {
-              if (child.geometry) child.geometry.dispose();
-            });
-
-          };
-        };
-        // Initialize based on variant
-        let cleanupFunc;
-        if (variant === 'original') {
-          cleanupFunc = initOriginalScene();
-        } else { // Default to grid
-          cleanupFunc = initGridScene();
-        }
-
-        return () => {
-          if (cleanupFunc) {
-            cleanupFunc();
-          }
-        };
-      }, [variant]);
-
-      return <div ref={mountRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />;
+        camera.position.z = 30;
+      } else if (variant === 'grid') {
+        createGrid();
+        camera.position.set(15, 10, 20);
+        camera.lookAt(0, 0, 0);
+      }
     };
 
-    export default ThreeDScene;
+    const createText = () => {
+      if (!loadedFont || !scene) return; // Ensure font and scene are ready
+
+      const textGeometry = new TextGeometry('Rasta Rock', {
+        font: loadedFont,
+        size: 10,
+        height: 2,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.5,
+        bevelSize: 0.3,
+        bevelOffset: 0,
+        bevelSegments: 5,
+      });
+
+      textGeometry.center();
+      const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+      textMesh = new THREE.Mesh(textGeometry, textMaterial);
+      textMesh.position.y = 2; // Adjust text position
+      textMesh.position.z = 5;
+      scene.add(textMesh);
+    };
+
+    const createTorus = () => {
+      if (!loadedTexture || !scene) return;
+
+      const geometry = new THREE.TorusGeometry(5, 1.5, 16, 100);
+      materials = rastaColors.map(
+        (color) =>
+          new THREE.MeshStandardMaterial({
+            color: color,
+            metalness: 0.6,
+            roughness: 0.4,
+            envMap: loadedTexture, // Use loaded texture
+            transparent: true,
+            opacity: 0.8,
+          })
+      );
+
+      group = new THREE.Group();
+      materials.forEach((material, index) => {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = 0.5 * index;
+        mesh.rotation.y = 0.3 * index;
+        group.add(mesh);
+      });
+
+      group.position.y = -2; // Adjust torus group position
+      scene.environment = loadedTexture;
+      scene.add(group);
+    };
+
+    const createGrid = () => {
+      // Grid creation remains the same
+      const gridSize = 10;
+      const cubeSize = 1;
+      const spacing = 1.2;
+
+      const vertexShader = `
+        varying vec3 vPosition;
+        void main() {
+          vPosition = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      const fragmentShader = `
+        uniform float time;
+        varying vec3 vPosition;
+
+        void main() {
+          vec3 color = vec3(0.0);
+          float pulse = sin(time + vPosition.x * 0.5 + vPosition.y * 0.5 + vPosition.z * 0.5) * 0.2 + 0.8;
+
+          if (int(mod(vPosition.x + vPosition.y + vPosition.z, 3.0)) == 0) {
+            color = vec3(1.0, 0.0, 0.0); // Red
+          } else if (int(mod(vPosition.x + vPosition.y + vPosition.z, 3.0)) == 1) {
+            color = vec3(1.0, 1.0, 0.0); // Yellow
+          } else {
+            color = vec3(0.0, 1.0, 0.0); // Green
+          }
+
+          gl_FragColor = vec4(color * pulse, 0.2);
+        }
+      `;
+
+      shaderMaterial = new THREE.ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        transparent: true,
+        uniforms: {
+          time: { value: 0 },
+        },
+      });
+
+      group = new THREE.Group();
+
+      for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+          for (let z = 0; z < gridSize; z++) {
+            const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+            const mesh = new THREE.Mesh(geometry, shaderMaterial);
+            mesh.position.set(
+              (x - gridSize / 2) * spacing,
+              (y - gridSize / 2) * spacing,
+              (z - gridSize / 2) * spacing
+            );
+            group.add(mesh);
+          }
+        }
+      }
+
+      scene.add(group);
+    };
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let touchX = 0;
+    let touchY = 0;
+    const targetLookAt = new THREE.Vector3(0, 0, 0);
+    const damping = 0.025;
+
+    const onMouseMove = (event) => {
+      mouseX = (event.clientX / window.innerWidth) - 0.5;
+      mouseY = (event.clientY / window.innerHeight) - 0.5;
+    };
+
+    const onTouchMove = (event) => {
+      if (event.touches.length > 0) {
+        touchX = (event.touches[0].clientX / window.innerWidth) - 0.5;
+        touchY = (event.touches[0].clientY / window.innerHeight) - 0.5;
+      }
+    };
+
+    const onWheel = (event) => {
+      if (camera) {
+        camera.position.z += event.deltaY * 0.05;
+        camera.position.z = Math.max(10, Math.min(variant === 'original' ? 40 : 30, camera.position.z));
+      }
+    };
+
+    const onScroll = () => {
+      if (variant !== 'original' || !group || !textMesh) return;
+
+      const scrollY = window.scrollY;
+
+      // Fade out text
+      const textOpacity = Math.max(1 - scrollY / 200, 0); // Adjust 200 to control fade distance
+      textMesh.material.opacity = textOpacity;
+      textMesh.material.transparent = true;
+
+      // Rotate torus
+      group.rotation.y = scrollY * 0.01; // Adjust 0.01 for rotation speed
+
+      group.children.forEach((mesh) => {
+        const wobbleX = Math.sin(scrollY * 0.01 + mesh.rotation.x) * 0.5;
+        const wobbleY = Math.cos(scrollY * 0.01 + mesh.rotation.y) * 0.5;
+        mesh.rotation.x += wobbleX * 0.05;
+        mesh.rotation.y += wobbleY * 0.05;
+      });
+    };
+
+    const updateCameraPosition = () => {
+      const cameraOffset = new THREE.Vector3(
+        (variant === 'original' ? mouseX * 8 : mouseX * 5),
+        0,
+        (variant === 'original' ? mouseY * 8 : mouseY * 5)
+      );
+      targetLookAt.copy(new THREE.Vector3(0, 0, 0).add(cameraOffset));
+    };
+
+    const addEventListeners = () => {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('touchmove', onTouchMove);
+      window.addEventListener('wheel', onWheel);
+      if (variant === 'original') {
+        window.addEventListener('scroll', onScroll);
+      }
+    };
+
+    const removeEventListeners = () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('scroll', onScroll);
+    };
+
+    const animate = () => {
+      if (!renderer || !scene) return;
+
+      const delta = clock.getDelta();
+
+      if (variant === 'original' && group) {
+        group.children.forEach((mesh, index) => {
+          mesh.rotation.x += 0.2 * delta;
+          mesh.rotation.y += 0.1 * delta;
+          const time = clock.elapsedTime + index * 10;
+          mesh.material.opacity = 0.8 + Math.sin(time) * 0.1;
+        });
+      } else if (variant === 'grid' && group) {
+        shaderMaterial.uniforms.time.value = clock.getElapsedTime();
+        group.rotation.y = clock.getElapsedTime() * 0.05;
+      }
+
+      if (camera) {
+        camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
+        updateCameraPosition();
+      }
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+
+    const handleResize = () => {
+      if (camera) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      }
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    initScene(); // Initialize the scene
+    addEventListeners();
+    animate();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      console.log(`Cleaning up ThreeDScene with variant: ${variant}`);
+      removeEventListeners();
+      window.removeEventListener('resize', handleResize);
+
+      if (mountRef.current && renderer) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+
+      if (renderer) renderer.dispose();
+      if (loadedTexture) loadedTexture.dispose();
+      if (shaderMaterial) shaderMaterial.dispose();
+      materials.forEach((material) => material.dispose());
+
+      if (group) {
+        group.children.forEach((child) => {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material && child.material instanceof THREE.Material) {
+            child.material.dispose();
+          }
+        });
+      }
+      if (textMesh) {
+        if (textMesh.geometry) textMesh.geometry.dispose();
+        if (textMesh.material) textMesh.material.dispose();
+      }
+
+      scene = null;
+      camera = null;
+      renderer = null;
+      group = null;
+    };
+  }, [variant]);
+
+  // useEffect(() => {
+  //   if (mountRef.current) {
+  //     // Calculate the height (viewport height - navbar height)
+  //     const navbarHeight = 64; // Adjust this value if your navbar has a different height
+  //     const sceneHeight = window.innerHeight - navbarHeight;
+  //     mountRef.current.style.height = `${sceneHeight}px`;
+  //   }
+  // }, []);
+
+  return (
+    
+      <div ref={mountRef} style={{pointerEvents: 'none'}}>
+        {/* SEO Text - Hidden from view */}
+        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', opacity: 0 }}>
+            vibra alto con rasta rock
+        </div>
+      </div>
+    
+  );
+};
+
+export default ThreeDScene;
