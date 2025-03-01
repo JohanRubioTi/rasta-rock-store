@@ -42,16 +42,29 @@ const Home = () => {
         {/* Subheader and CTA */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
             <div className="container mx-auto p-8 text-center">
-                <p className="text-lg md:text-xl lg:text-2xl text-rastaLight mt-4 mb-8 text-shadow">
+                <h1 className="sr-only">
+                    Rasta Rock Store
+                </h1>
+                <p className="text-lg md:text-xl lg:text-2xl text-rastaLight mt-4 mb-8 text-shadow rasta-body">
                     Encuentra los accesorios y la moda más auténtica.
                 </p>
-                <a href="/products" className="cta-button rasta-button-gradient font-bold py-4 px-10 rounded-full text-lg uppercase tracking-wider transition duration-300">
+                <Link to="/products" className="font-bold py-4 px-8 rounded-full text-lg uppercase tracking-wider transition-duration-500 animate-gradient-shift
+                                           bg-gradient-to-r from-rastaYellow to-rastaGreen-500 bg-clip-border hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-gray-400 focus:ring-opacity-75 transform hover:scale-105 motion-reduce:transform-none
+                                           text-white shadow-md hover:shadow-lg border border-rastaYellow bg-opacity-90 font-sans"
+                                           style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
                     Explora Ahora
+                </Link>
+            </div>
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                <a href="#lo-mas-deseado" className="flex justify-center animate-ping"> {/* Centered pulse animation class added to a */}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
                 </a>
             </div>
         </div>
       </div>
-      <section className="py-12 bg-transparent"> {/* bg-white removed and bg-transparent added */}
+      <section id="lo-mas-deseado" className="py-12 bg-transparent"> {/* bg-white removed and bg-transparent added */}
         <div className="container mx-auto px-4">
           <h2 className="text-right font-bold text-3xl uppercase">
             Exclusivo<br/>Colombia

@@ -25,6 +25,7 @@
           animation: {
             'blur-pulse': 'blur-pulse 5s linear infinite',
             'spotlight-move': 'spotlight-move 15s linear infinite',
+            'gradient-shift': 'gradient-shift 5s linear infinite',
           },
           keyframes: {
             'blur-pulse': {
@@ -34,6 +35,10 @@
             'rasta-radial': {
               '0%, 100%': { backgroundPosition: '0% 50%', backgroundSize: '250% 250%' },
               '50%': { backgroundPosition: '200% 50%', backgroundSize: '400% 400%' },
+            },
+            'gradient-shift': {
+              '0%, 100%': { backgroundPosition: '200% 0%' },
+              '50%': { backgroundPosition: '0% 200%' },
             },
           },
         },
