@@ -99,7 +99,7 @@ const ProductCatalog = () => {
                 <input
                   type="text"
                   placeholder="Buscar productos..."
-                  className="filter-button bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
+                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen border-2 border-rastaYellow"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
