@@ -99,7 +99,7 @@ const ProductCatalog = () => {
                 <input
                   type="text"
                   placeholder="Buscar productos..."
-                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen border-2 border-rastaYellow"
+                  className="filter-button bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
@@ -128,10 +128,10 @@ const ProductCatalog = () => {
                     <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
                     <p className="font-bold text-gray-300">${product.price}</p>
                     <div className="flex flex-col space-y-2 mt-4"> {/* Vertical button layout */}
-                      <Link to={`/products/${product.id}`} className="view-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
+                      <Link to={`/products/${product.id}`} className="view-button filter-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
                          Ver Detalles
                       </Link>
-                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
+                      <button className="filter-button bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
                         Añadir al Carrito
                       </button>
                     </div>
