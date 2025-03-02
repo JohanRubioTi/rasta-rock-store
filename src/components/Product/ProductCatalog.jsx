@@ -67,7 +67,7 @@ const ProductCatalog = () => {
 
           <div className="container mx-auto p-4">
             <div className="mb-4">
-              <Link to="/" className="nav-link back-to-home-button filter-button">
+              <Link to="/" className="nav-link inline-flex">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 mr-2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
                 </svg>
@@ -128,10 +128,10 @@ const ProductCatalog = () => {
                     <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
                     <p className="font-bold text-gray-300">${product.price}</p>
                     <div className="flex flex-col space-y-2 mt-4"> {/* Vertical button layout */}
-                      <Link to={`/products/${product.id}`} className="view-button filter-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
+                      <Link to={`/products/${product.id}`} className="view-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
                          Ver Detalles
                       </Link>
-                      <button className="filter-button bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
+                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
                         Añadir al Carrito
                       </button>
                     </div>
