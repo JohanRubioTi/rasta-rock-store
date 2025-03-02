@@ -67,7 +67,7 @@ const ProductCatalog = () => {
 
           <div className="container mx-auto p-4">
             <div className="mb-4">
-              <Link to="/" className="back-to-home-button">
+              <Link to="/" className="nav-link back-to-home-button filter-button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 mr-2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
                 </svg>
@@ -81,7 +81,7 @@ const ProductCatalog = () => {
               {categories.map(category => (
                 <button
                   key={category}
-                  className={`filter-button ${selectedCategory === category ? 'filter-button-active' : ''}`}
+                  className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === category ? 'filter-button-active' : ''}`}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category === 'all' ? 'Todos' :
@@ -99,13 +99,13 @@ const ProductCatalog = () => {
                 <input
                   type="text"
                   placeholder="Buscar productos..."
-                  className="bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
+                  className="filter-button bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <div>
                 <select
-                  className="price-filter-select"
+                  className="filter-button price-filter-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
@@ -117,22 +117,22 @@ const ProductCatalog = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {sortedProducts.map((product) => (
-                <div key={product.id} className="rasta-card-gradient rounded-md text-rastaLight hover:shadow-lg hover:bg-gray-600 transition duration-300 flex flex-col">
-                  <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" />
-                  <div className="px-4 py-2 flex flex-col justify-between flex-grow">
-                    <div>
-                      <h2 className="product-card-title text-lg mb-1">{product.name}</h2>
-                      <p className="text-rastaRed font-bold">${product.price}</p>
-                    </div>
-                    {/* Button Container for Consistent Alignment */}
-                    <div className="mt-2 flex items-center justify-between">
-                      <Link to={`/products/${product.id}`} className="view-button">
-                        Ver
+<div key={product.id} className="rasta-card-gradient rounded-md hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="w-full h-56 object-cover rounded-t-md mb-3"
+                    onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/150" }} // Placeholder image
+                  />
+                  <div className="px-4 py-2 flex flex-col items-center justify-center flex-grow text-center">
+                    <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
+                    <p className="font-bold text-gray-300">${product.price}</p>
+                    <div className="flex flex-col space-y-2 mt-4"> {/* Vertical button layout */}
+                      <Link to={`/products/${product.id}`} className="view-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
+                         Ver Detalles
                       </Link>
-                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-2 px-3 rounded-full transition duration-300 flex items-center justify-center"> {/* Increased padding */}
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                        </svg>
+                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
+                        Añadir al Carrito
                       </button>
                     </div>
                   </div>
