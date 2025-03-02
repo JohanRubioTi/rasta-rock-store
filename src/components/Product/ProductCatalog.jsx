@@ -56,8 +56,8 @@ const ProductCatalog = () => {
           <ThreeDScene variant="grid" />
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-rastaRed via-rastaYellow to-rastaGreen opacity-90 animate-spotlight-move" style={{
-          backgroundSize: '200% 200%',
+        <div className="absolute inset-0 bg-dynamic-gradient opacity-90 animate-gradient-move" style={{
+          backgroundSize: '400% 400%',
           filter: 'blur(100px)',
           zIndex: -1
         }}></div>

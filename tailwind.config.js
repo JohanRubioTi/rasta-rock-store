@@ -26,22 +26,30 @@
             'blur-pulse': 'blur-pulse 5s linear infinite',
             'spotlight-move': 'spotlight-move 15s linear infinite',
             'gradient-shift': 'gradient-shift 5s linear infinite',
-          },
-          keyframes: {
-            'blur-pulse': {
-              '0%, 100%': { backdropFilter: 'blur(10px)' },
-              '50%': { backdropFilter: 'blur(15px)' },
-            },
-            'rasta-radial': {
-              '0%, 100%': { backgroundPosition: '0% 50%', backgroundSize: '250% 250%' },
-              '50%': { backgroundPosition: '200% 50%', backgroundSize: '400% 400%' },
-            },
-            'gradient-shift': {
-              '0%, 100%': { backgroundPosition: '200% 0%' },
-              '50%': { backgroundPosition: '0% 200%' },
-            },
-          },
+            'gradient-move': 'gradient-move 15s ease infinite', // Increased duration to 15s
+      },
+      keyframes: {
+        'gradient-move': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        'blur-pulse': {
+          '0%, 100%': { backdropFilter: 'blur(10px)' },
+          '50%': { backdropFilter: 'blur(15px)' },
+        },
+        'rasta-radial': {
+          '0%, 100%': { backgroundPosition: '0% 50%', backgroundSize: '250% 250%' },
+          '50%': { backgroundPosition: '200% 50%', backgroundSize: '400% 400%' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '200% 0%' },
+          '50%': { backgroundPosition: '0% 200%' },
         },
       },
-      plugins: [],
-    };
+      backgroundImage: {
+        'dynamic-gradient': 'linear-gradient(270deg, #F7D046, #34B44A, #2a8a3d, #1a4d22, #E03A3E)', // Yellow and green at start
+      },
+    },
+  },
+  plugins: [],
+};

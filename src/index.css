@@ -112,3 +112,13 @@ body {
 .price-filter-select:hover{
      background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
 }
+
+@keyframes sleek-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-sleek-move {
+  animation: sleek-move 15s ease infinite;
+}
