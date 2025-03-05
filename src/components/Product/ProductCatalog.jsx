@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import Navbar from '../Navbar';
 import ThreeDScene from '../ThreeDScene';
+import { ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/solid'; // Add EyeIcon
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -117,26 +118,29 @@ const ProductCatalog = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {sortedProducts.map((product) => (
-<div key={product.id} className="rasta-card-gradient rounded-md hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
+                <Link to={`/products/${product.id}`} className="w-full">
+                <div key={product.id} className="rasta-card-gradient rasta-card-frame product-card rounded-md hover:shadow-lg flex flex-col h-96 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="w-full h-56 object-cover rounded-t-md mb-3"
-                    onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/150" }} // Placeholder image
+                    className="w-full h-56 object-cover rounded-t-md"
+                    onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/150" }}
                   />
-                  <div className="px-4 py-2 flex flex-col items-center justify-center flex-grow text-center">
-                    <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
+                  <div className="product-card-content px-4 py-2 flex flex-col items-center justify-between flex-grow text-center">
+                    <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate h-12 overflow-hidden text-ellipsis">{product.name}</h2>
                     <p className="font-bold text-gray-300">${product.price}</p>
-                    <div className="flex flex-col space-y-2 mt-4"> {/* Vertical button layout */}
-                      <Link to={`/products/${product.id}`} className="view-button p-3 bg-gray-700 hover:bg-gray-600 text-center rounded-md block"> {/* Full width button and text-center */}
-                         Ver Detalles
-                      </Link>
-                      <button className="bg-rastaGreen hover:bg-rastaGreen-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"> {/* Full width cart button */}
-                        Añadir al Carrito
-                      </button>
-                    </div>
+                  </div>
+                  <div className="product-card-buttons">
+                    <button className="view-details-button">
+                      <EyeIcon className="h-5 w-5 mr-1" />
+                      Ver Detalles
+                    </button>
+                    <button className="add-to-cart-button">
+                      <ShoppingCartIcon className="h-5 w-5" />
+                    </button>
                   </div>
                 </div>
+                </Link>
               ))}
             </div>
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '../Navbar';
 import ThreeDScene from '../ThreeDScene';
-import { ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon, BanknotesIcon } from '@heroicons/react/24/solid';
+import { ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon, BanknotesIcon, EyeIcon } from '@heroicons/react/24/solid';
 
 const formatPriceCOP = (price) => {
   return new Intl.NumberFormat('es-CO', {
@@ -496,21 +496,29 @@ const ProductDetail = () => {
                   key={product.id}
                   className="block"
                 >
-                  <div className="rasta-card-gradient rounded-lg hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
+                  <div className="rasta-card-gradient rasta-card-frame product-card rounded-lg hover:shadow-lg flex flex-col h-96 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-full h-56 object-cover rounded-t-md mb-3"
+                      className="w-full h-56 object-cover rounded-t-md"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = 'https://via.placeholder.com/150';
                       }}
                     />
-                    <div className="px-4 py-2 flex flex-col items-center justify-center flex-grow text-center">
-                      <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">
-                        {product.name}
-                      </h2>
+                    <div className="product-card-content px-4 py-2 flex flex-col items-center justify-between flex-grow text-center">
+                      <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate h-12 overflow-hidden text-ellipsis">{product.name}</h2>
                       <p className="font-bold text-gray-300">${product.price}</p>
+                    </div>
+                    {/* Combined Buttons */}
+                    <div className="product-card-buttons">
+                        <button to={`/products/${product.id}`} className="view-details-button">
+                            <EyeIcon className="h-5 w-5 mr-1" />
+                            Ver Detalles
+                        </button>
+                        <button className="add-to-cart-button">
+                            <ShoppingCartIcon className="h-5 w-5" />
+                        </button>
                     </div>
                   </div>
                 </Link>
