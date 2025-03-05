@@ -68,7 +68,9 @@ const ThreeDScene = ({ variant }) => {
         camera.position.z = 30;
       } else if (variant === 'grid') {
         createGrid();
-        camera.position.set(15, 10, 20);
+        camera.position.set(15, 10, 25); // Adjusted camera position
+        camera.fov = 75; // Decreased FOV for larger initial size
+        camera.updateProjectionMatrix();
         camera.lookAt(0, 0, 0);
       }
     };
@@ -192,6 +194,9 @@ const ThreeDScene = ({ variant }) => {
     let mouseY = 0;
     let touchX = 0;
     let touchY = 0;
+    let initialPinchDistance = null; // For pinch zoom
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
     const targetLookAt = new THREE.Vector3(0, 0, 0);
     const damping = 0.025;
 
@@ -200,12 +205,38 @@ const ThreeDScene = ({ variant }) => {
       mouseY = (event.clientY / window.innerHeight) - 0.5;
     };
 
+    const onTouchStart = (event) => {
+      if (event.touches.length === 2 && variant === 'grid') {
+        initialPinchDistance = getPinchDistance(event.touches);
+      }
+    };
+
     const onTouchMove = (event) => {
-      if (event.touches.length > 0) {
+      if (event.touches.length === 2 && variant === 'grid') {
+        event.preventDefault(); // Prevent page scroll
+        const currentPinchDistance = getPinchDistance(event.touches);
+        const pinchRatio = currentPinchDistance / initialPinchDistance;
+        let targetFOV = camera.fov / pinchRatio;
+        targetFOV = Math.max(40, Math.min(100, targetFOV)); // Clamp FOV
+        camera.fov = targetFOV;
+        camera.updateProjectionMatrix();
+        initialPinchDistance = currentPinchDistance;
+      } else if (event.touches.length === 1) {
         touchX = (event.touches[0].clientX / window.innerWidth) - 0.5;
         touchY = (event.touches[0].clientY / window.innerHeight) - 0.5;
       }
     };
+
+    const onTouchEnd = () => {
+      initialPinchDistance = null;
+    };
+
+    const getPinchDistance = (touches) => {
+      const dx = touches[0].pageX - touches[1].pageX;
+      const dy = touches[0].pageY - touches[1].pageY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
 
     const onWheel = (event) => {
       if (camera) {
@@ -235,6 +266,38 @@ const ThreeDScene = ({ variant }) => {
       });
     };
 
+    const onScrollGrid = () => {
+      if (variant !== 'grid' || !camera) return;
+
+      const scrollY = window.scrollY;
+      let targetFOV = 75 - scrollY * 0.12; // Increased zoom speed, starting from 75
+      targetFOV = Math.max(30, Math.min(75, targetFOV)); // Clamp FOV, reduced min FOV to 30
+
+      camera.fov = targetFOV;
+      camera.updateProjectionMatrix();
+    };
+
+
+    const onPointerDown = (event) => {
+      if (variant !== 'grid' || !camera || !group || !renderer) return;
+
+      pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+      pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(pointer, camera);
+
+      const intersects = raycaster.intersectObjects(group.children);
+
+      if (intersects.length > 0) {
+        const clickedCube = intersects[0].object;
+        clickedCube.material.color.set(0xff0000); // Change color to red for feedback
+        setTimeout(() => {
+          clickedCube.material.color.set(0xffffff); // Revert color back to white after a delay
+        }, 200); // 200ms delay
+      }
+    };
+
+
     const updateCameraPosition = () => {
       const cameraOffset = new THREE.Vector3(
         (variant === 'original' ? mouseX * 8 : mouseX * 5),
@@ -249,7 +312,9 @@ const ThreeDScene = ({ variant }) => {
       window.addEventListener('touchmove', onTouchMove);
       window.addEventListener('wheel', onWheel);
       if (variant === 'original') {
-        window.addEventListener('scroll', onScroll);
+        window.addEventListener('scroll', variant === 'original' ? onScroll : onScrollGrid);
+      } else if (variant === 'grid') {
+        window.addEventListener('scroll', onScrollGrid);
       }
     };
 
@@ -257,8 +322,12 @@ const ThreeDScene = ({ variant }) => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('wheel', onWheel);
-      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('scroll', variant === 'original' ? onScroll : onScrollGrid);
+      if (variant === 'grid') {
+        window.removeEventListener('scroll', onScrollGrid);
+      }
     };
+
 
     const animate = () => {
       if (!renderer || !scene) return;
@@ -280,7 +349,7 @@ const ThreeDScene = ({ variant }) => {
    if (camera) {
          camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
          updateCameraPosition();
-   }
+      }
    if (textMesh) {
          const currentScroll = window.scrollY;
          const newOpacity = Math.max(1 - currentScroll / 200, 0);
@@ -304,11 +373,19 @@ const ThreeDScene = ({ variant }) => {
     initScene(); // Initialize the scene
     addEventListeners();
     animate();
+    renderer.domElement.addEventListener('pointerdown', onPointerDown); // Add pointerdown listener
+    renderer.domElement.addEventListener('touchstart', onTouchStart); // Add touchstart listener
+    renderer.domElement.addEventListener('touchmove', onTouchMove); // Add touchmove listener
+    renderer.domElement.addEventListener('touchend', onTouchEnd); // Add touchend listener
     window.addEventListener('resize', handleResize);
 
     return () => {
       console.log(`Cleaning up ThreeDScene with variant: ${variant}`);
       removeEventListeners();
+      renderer.domElement.removeEventListener('pointerdown', onPointerDown); // Remove pointerdown listener
+      renderer.domElement.removeEventListener('touchstart', onTouchStart); // Remove touchstart listener
+      renderer.domElement.removeEventListener('touchmove', onTouchMove); // Remove touchmove listener
+      renderer.domElement.removeEventListener('touchend', onTouchEnd); // Remove touchend listener
       window.removeEventListener('resize', handleResize);
 
       if (mountRef.current && renderer) {
