@@ -78,24 +78,7 @@ const ProductCatalog = () => {
 
               {/* Filters (Desktop) */}
               <div className="col-span-1 hidden md:block">
-                <div className="mb-4 flex space-x-4 overflow-x-auto">
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === category ? 'filter-button-active' : ''}`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category === 'all' ? 'Todos' :
-                        category === 'accessories' ? 'Accesorios' :
-                          category === 'clothing' ? 'Ropa' :
-                            category === 'smoke-accessories' ? 'Accesorios de Fumar' :
-                              category === 'handmade-decorations' ? 'Decoración Artesanal' :
-                                category === 'piercings' ? 'Piercings' : ''}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-4 flex-wrap">
                   <div className="relative">
                     <input
                       type="text"
@@ -115,62 +98,27 @@ const ProductCatalog = () => {
                     </select>
                   </div>
                 </div>
+                <div className="mb-4 flex flex-col space-y-2 ">
+                  {categories.map(category => (
+                    <button
+                      key={category}
+                      className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-fit ${selectedCategory === category ? 'filter-button-active' : ''}`}
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category === 'all' ? 'Todos' :
+                        category === 'accessories' ? 'Accesorios' :
+                          category === 'clothing' ? 'Ropa' :
+                            category === 'smoke-accessories' ? 'Accesorios de Fumar' :
+                              category === 'handmade-decorations' ? 'Decoración Artesanal' :
+                                category === 'piercings' ? 'Piercings' : ''}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Mobile Filters Toggle */}
-              <div className="md:hidden">
-                    <button
-                        onClick={() => setShowMobileFilters(!showMobileFilters)}
-                        className="w-full bg-rastaGreen text-rastaDark py-2 px-4 rounded-md font-bold uppercase tracking-wider transition-colors duration-300 hover:bg-rastaYellow"
-                    >
-                        {showMobileFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
-                    </button>
-                </div>
-
-                {/* Mobile Filters (Collapsible) */}
-                <div className={`md:hidden ${showMobileFilters ? 'block' : 'hidden'} mt-4`}>
-                    <div className="mb-4 flex space-x-4 overflow-x-auto">
-                        {categories.map(category => (
-                            <button
-                                key={category}
-                                className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === category ? 'filter-button-active' : ''}`}
-                                onClick={() => { setSelectedCategory(category); setShowMobileFilters(false); }}
-                            >
-                                {category === 'all' ? 'Todos' :
-                                    category === 'accessories' ? 'Accesorios' :
-                                        category === 'clothing' ? 'Ropa' :
-                                            category === 'smoke-accessories' ? 'Accesorios de Fumar' :
-                                                category === 'handmade-decorations' ? 'Decoración Artesanal' :
-                                                    category === 'piercings' ? 'Piercings' : ''}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="flex justify-between items-center mb-4">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Buscar productos..."
-                                className="filter-button bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <select
-                                className="filter-button price-filter-select"
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                            >
-                                <option value="price-low-high">Precio: Bajo a Alto</option>
-                                <option value="price-high-low">Precio: Alto a Bajo</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
               {/* Product Listing */}
-              <div className="col-span-1 md:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              <div className="col-span-2 md:col-span-3">
+                <div className="grid grid-cols-2 md:gap-4 sm:grid-cols-2 md:grid-cols-3 gap-8">
                   {sortedProducts.map((product) => (
                     <Link to={`/products/${product.id}`} className="w-full" key={product.id}>
                       <div className="rasta-card-gradient rasta-card-frame product-card rounded-md hover:shadow-lg flex flex-col h-full overflow-hidden shadow-inner transform hover:scale-105 transition duration-300 w-full sm:w-1/2 md:w-full bouncy-shrink">
@@ -201,7 +149,65 @@ const ProductCatalog = () => {
               </div>
             </div>
           </div>
+
         </div>
+
+        {/* Mobile Filters (Floating) */}
+        {showMobileFilters && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setShowMobileFilters(false)}
+          ></div>
+        )}
+        <div className={`fixed bottom-0 left-0 w-full bg-gray-800 text-white p-4 z-50 transition-transform duration-300 ${showMobileFilters ? 'translate-y-0' : 'translate-y-full'} md:hidden`}>
+
+          <div className="flex justify-between items-center mb-4 flex-wrap">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Buscar productos..."
+                className="filter-button bg-gray-700 bg-opacity-50 text-rastaLight rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rastaGreen"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div>
+              <select
+                className="filter-button price-filter-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="price-low-high">Precio: Bajo a Alto</option>
+                <option value="price-high-low">Precio: Alto a Bajo</option>
+              </select>
+            </div>
+          </div>
+          <div className="mb-4 flex flex-col space-y-4">
+            {categories.map(category => (
+              <button
+                key={category}
+                className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-auto ${selectedCategory === category ? 'filter-button-active' : ''}`}
+                onClick={() => { setSelectedCategory(category); setShowMobileFilters(false); }}
+              >
+                {category === 'all' ? 'Todos' :
+                  category === 'accessories' ? 'Accesorios' :
+                    category === 'clothing' ? 'Ropa' :
+                      category === 'smoke-accessories' ? 'Accesorios de Fumar' :
+                        category === 'handmade-decorations' ? 'Decoración Artesanal' :
+                          category === 'piercings' ? 'Piercings' : ''}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setShowMobileFilters(false)}
+            className="absolute top-2 right-2 text-gray-400 hover:text-white"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+
+          </button>
+        </div>
+
       </div>
     </>
   );
