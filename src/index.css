@@ -10,21 +10,31 @@
 
 /* Combined button area */
 .product-card-buttons {
-  @apply flex items-center justify-center w-full; /* Center buttons */
+  @apply flex items-center justify-center w-full; /* Center buttons in a row */
   opacity: 0;
-  transition: opacity 0.3s ease;
+  position: absolute;
+  bottom: 1rem; /* Position buttons near the bottom */
+  left: 0;
+  transform: translateY(20%); /* Slightly move buttons up from bottom */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Add transform transition */
 }
 
 /* Show buttons on hover, hide title/price */
 .rasta-card-gradient:hover .product-card-buttons {
   opacity: 1;
+  transform: translateY(0); /* Slide buttons up to be fully visible */
 }
 
 .rasta-card-gradient:hover .product-card-content {
     opacity: 0;
 }
-.product-card-content{
-    transition: opacity 0.3s ease;
+
+.rasta-card-gradient:hover .product-image {
+    opacity: 0.8; /* Slightly dim the image on hover */
+}
+
+.product-image {
+    transition: opacity 0.3s ease; /* Smooth opacity transition for image */
 }
 
 .view-details-button {
@@ -48,16 +58,23 @@
 
   .product-card {
     @apply transition-transform duration-300 ease-in-out active:scale-95; /* Shrink on click */
-    animation: bounce 0.5s; /* Bounce animation */
   }
 
-  @keyframes bounce {
-    0%, 100% {
-      transform: scale(0.95);
-    }
-    50% {
-      transform: scale(1);
-    }
+
+  .product-image {
+    position: relative;
+  }
+
+  .product-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0); /* Initially transparent */
+    transition: background-color 0.3s ease;
+  }
+
+  .product-image:hover::before {
+    background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black on hover */
   }
     .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -196,4 +213,16 @@ body {
 
 .quantity-input[type=number] {
   -moz-appearance: textfield; /* Firefox */
+}
+
+.bouncy-shrink {
+  transition: transform 0.2s ease;
+}
+
+.bouncy-shrink:active, .bouncy-shrink:focus {
+    transform: scale(0.95);
+}
+
+.selected-thumbnail-outline {
+    outline: 2px solid theme('colors.rastaYellow');
 }

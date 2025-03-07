@@ -30,10 +30,10 @@ const ProductDetail = () => {
     description: 'Gorro Rasta cálido y estiloso.',
     price: 87500, // Converted from $25
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'clothing',
     colors: ['Red', 'Yellow', 'Green', 'Black'],
@@ -52,10 +52,10 @@ const ProductDetail = () => {
     description: 'Camiseta clásica de Bob Marley.',
     price: 105000, // Converted from $30
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'clothing',
     colors: ['Black'],
@@ -71,10 +71,10 @@ const ProductDetail = () => {
     description: 'Elegante collar con signo de la paz.',
     price: 52500, // Converted from $15
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'accessories',
     colors: ['Silver'],
@@ -90,10 +90,10 @@ const ProductDetail = () => {
     description: 'Set de pulseras Rasta coloridas.',
     price: 70000, // Converted from $20
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'accessories',
     colors: ['Red', 'Yellow', 'Green', 'Black'],
@@ -109,10 +109,10 @@ const ProductDetail = () => {
     description: 'Papel de liar tamaño king.',
     price: 17500, // Converted from $5
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'smoke-accessories',
     colors: ['White'],
@@ -128,10 +128,10 @@ const ProductDetail = () => {
     description: 'Grinder de hierbas de alta calidad.',
     price: 122500, // Converted from $35
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'smoke-accessories',
     colors: ['Black'],
@@ -147,10 +147,10 @@ const ProductDetail = () => {
     description: 'Set de posavasos Rasta hechos a mano.',
     price: 77000, // Converted from $22
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'handmade-decorations',
     colors: ['Red', 'Yellow', 'Green', 'Black'],
@@ -166,10 +166,10 @@ const ProductDetail = () => {
     description: 'Vibrante decoración de pared Rasta.',
     price: 140000, // Converted from $40
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'handmade-decorations',
     colors: ['Red', 'Yellow', 'Green', 'Black'],
@@ -185,10 +185,10 @@ const ProductDetail = () => {
     description: 'Piercing de nariz de oro.',
     price: 63000, // Converted from $18
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'piercings',
     colors: ['Gold'],
@@ -204,10 +204,10 @@ const ProductDetail = () => {
     description: 'Piercings de oreja de aros de plata.',
     price: 98000, // Converted from $28
     images: [
-      'https://via.placeholder.com/400',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
-      'https://via.placeholder.com/150',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
+      'https://placehold.co/400',
     ],
     category: 'piercings',
     colors: ['Silver'],
@@ -307,7 +307,7 @@ const ProductDetail = () => {
           </Link>
         </div>
 
-        <div className="rasta-card-gradient p-6 rounded-lg shadow-lg product-card-gradient flex flex-col md:flex-row">
+        <div className="rasta-card-gradient p-6 rounded-lg shadow-lg product-card-gradient flex flex-col md:flex-row bouncy-shrink">
           {/* Image Section */}
           <div className="md:w-1/2 md:pr-6 flex flex-col items-center">
             <div className="relative w-full" style={{ paddingTop: '100%' }}>
@@ -339,7 +339,7 @@ const ProductDetail = () => {
                   key={index}
                   src={image || placeholderImage}
                   alt={`${product.name} thumbnail ${index + 1}`}
-                  className="w-16 h-16 object-cover rounded-md cursor-pointer hover:opacity-75 transition duration-300"
+                  className={`w-16 h-16 object-cover rounded-md cursor-pointer hover:opacity-75 transition duration-300 ${selectedImage === index ? 'selected-thumbnail-outline' : ''}`}
                   onClick={() => handleImageClick(index)}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -352,7 +352,7 @@ const ProductDetail = () => {
 
           {/* Text and Details Section */}
           <div className="md:w-1/2 flex flex-col">
-            <h1 className="text-4xl font-bold font-rasta-heading">
+            <h1 className="text-4xl font-bold font-rasta-heading product-card-readable-title">
               {product.name}
             </h1>
             <h2 className="text-lg text-gray-300 mt-1 font-product-card-font">{product.subtitle}</h2>
@@ -433,7 +433,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="mt-6 flex space-x-2">
+            <div className="mt-6 flex space-x-2 justify-center">
               <button
                 className="group px-4 py-2 bg-black bg-opacity-80 border border-transparent rounded-lg text-rastaLight flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r from-rastaGreen-900 to-rastaGreen-700 hover:border-rastaGreen"
               >
@@ -496,14 +496,14 @@ const ProductDetail = () => {
                   key={product.id}
                   className="block"
                 >
-                  <div className="rasta-card-gradient rasta-card-frame product-card rounded-lg hover:shadow-lg flex flex-col h-96 overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
+                  <div className="rasta-card-gradient rasta-card-frame product-card rounded-lg hover:shadow-lg flex flex-col h-full overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-full h-56 object-cover rounded-t-md"
+                      className="w-full h-auto flex-grow object-cover rounded-t-md product-image"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/150';
+                        e.target.src = 'https://placehold.co/400';
                       }}
                     />
                     <div className="product-card-content px-4 py-2 flex flex-col items-center justify-between flex-grow text-center">
@@ -511,7 +511,7 @@ const ProductDetail = () => {
                       <p className="font-bold text-gray-300">${product.price}</p>
                     </div>
                     {/* Combined Buttons */}
-                    <div className="product-card-buttons">
+                    <div className="product-card-buttons space-x-2">
                         <button to={`/products/${product.id}`} className="view-details-button">
                             <EyeIcon className="h-5 w-5 mr-1" />
                             Ver Detalles

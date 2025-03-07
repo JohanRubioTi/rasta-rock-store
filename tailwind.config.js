@@ -19,8 +19,8 @@
             'rasta-banner-heading': ['Bangers', 'cursive'],
             'rasta-nav-links': ['Roboto Condensed', 'sans-serif'],
             'rasta-body': ['Roboto', 'sans-serif'],
-            'rasta-heading': ['Bangers', 'cursive'], // Re-add rasta-heading for section titles, also using Bangers for now, can be adjusted
-            'product-card-font': ['Montserrat', 'sans-serif'], // New font for product cards - Montserrat is modern and readable
+            'rasta-heading': ['Bangers', 'cursive'],
+            'product-card-font': ['Inter', 'sans-serif'],
           },
           animation: {
             'blur-pulse': 'blur-pulse 5s linear infinite',
