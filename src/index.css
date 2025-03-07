@@ -216,7 +216,7 @@ body {
 }
 
 .bouncy-shrink {
-  transition: transform 0.2s ease;
+  transition: transform 0.4s ease;
 }
 
 .bouncy-shrink:active, .bouncy-shrink:focus {

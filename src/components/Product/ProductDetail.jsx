@@ -307,7 +307,7 @@ const ProductDetail = () => {
           </Link>
         </div>
 
-        <div className="rasta-card-gradient p-6 rounded-lg shadow-lg product-card-gradient flex flex-col md:flex-row bouncy-shrink">
+        <div className="rasta-card-gradient p-6 rounded-lg shadow-lg product-card-gradient flex flex-col md:flex-row ">
           {/* Image Section */}
           <div className="md:w-1/2 md:pr-6 flex flex-col items-center">
             <div className="relative w-full" style={{ paddingTop: '100%' }}>
@@ -321,13 +321,13 @@ const ProductDetail = () => {
                 }}
               />
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none"
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full md:hover:bg-opacity-75 focus:outline-none"
                 onClick={prevImage}
               >
                 <ChevronLeftIcon className="h-6 w-6" />
               </button>
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none"
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full md:hover:bg-opacity-75 focus:outline-none"
                 onClick={nextImage}
               >
                 <ChevronRightIcon className="h-6 w-6" />
@@ -339,7 +339,7 @@ const ProductDetail = () => {
                   key={index}
                   src={image || placeholderImage}
                   alt={`${product.name} thumbnail ${index + 1}`}
-                  className={`w-16 h-16 object-cover rounded-md cursor-pointer hover:opacity-75 transition duration-300 ${selectedImage === index ? 'selected-thumbnail-outline' : ''}`}
+                  className={`w-16 h-16 object-cover rounded-md cursor-pointer md:hover:opacity-75 transition duration-300 ${selectedImage === index ? 'selected-thumbnail-outline' : ''}`}
                   onClick={() => handleImageClick(index)}
                   onError={(e) => {
                     e.target.onerror = null;
@@ -371,7 +371,7 @@ const ProductDetail = () => {
                     className={`w-6 h-6 rounded-full mr-2 focus:outline-none ${
                       selectedColor === color
                         ? 'ring-2 ring-rastaGreen'
-                        : 'hover:ring-2 hover:ring-rastaGreen'
+                        : 'md:hover:ring-2 md:hover:ring-rastaGreen'
                     }`}
                     style={{ backgroundColor: color, border: '1px solid rgba(255,255,255,0.5)' }}
                     onClick={() => setSelectedColor(color)}
@@ -391,7 +391,7 @@ const ProductDetail = () => {
                     className={`w-8 h-8 rounded-md mr-2 focus:outline-none text-sm font-bold uppercase transition-colors duration-200 ${
                       selectedSize === size
                         ? 'bg-rastaGreen text-rastaDark'
-                        : 'bg-black text-rastaLight border border-rastaGreen hover:bg-gradient-to-r from-rastaGreen-700 to-rastaGreen-900'
+                        : 'bg-black text-rastaLight border border-rastaGreen md:hover:bg-gradient-to-r from-rastaGreen-700 to-rastaGreen-900'
                     }`}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -407,7 +407,7 @@ const ProductDetail = () => {
               <span className="mr-2 text-gray-300 font-product-card-font">Cantidad:</span>
               <div className="inline-flex items-center">
                 <button
-                  className="bg-black hover:bg-gray-700 text-rastaLight px-2 py-1 rounded-l-md focus:outline-none border border-rastaGreen"
+                  className="bg-black md:hover:bg-gray-700 text-rastaLight px-2 py-1 rounded-l-md focus:outline-none border border-rastaGreen"
                   onClick={() => setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1))}
                 >
                   -
@@ -425,7 +425,7 @@ const ProductDetail = () => {
                   className="bg-black text-rastaLight px-4 py-1 w-16 text-center focus:outline-none border-t border-b border-rastaGreen appearance-none quantity-input"
                 />
                 <button
-                  className="bg-black hover:bg-gray-700 text-rastaLight px-2 py-1 rounded-r-md focus:outline-none border border-rastaGreen"
+                  className="bg-black md:hover:bg-gray-700 text-rastaLight px-2 py-1 rounded-r-md focus:outline-none border border-rastaGreen"
                   onClick={() => setQuantity((prevQuantity) => prevQuantity + 1)}
                 >
                   +
@@ -435,15 +435,15 @@ const ProductDetail = () => {
 
             <div className="mt-6 flex space-x-2 justify-center">
               <button
-                className="group px-4 py-2 bg-black bg-opacity-80 border border-transparent rounded-lg text-rastaLight flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r from-rastaGreen-900 to-rastaGreen-700 hover:border-rastaGreen"
+                className="group px-4 py-2 bg-black bg-opacity-80 border border-transparent rounded-lg text-rastaLight flex items-center justify-center transition-all duration-300 md:hover:bg-gradient-to-r from-rastaGreen-900 to-rastaGreen-700 md:hover:border-rastaGreen"
               >
-                <ShoppingCartIcon className="h-5 w-5 mr-1 group-hover:text-rastaDark" />
+                <ShoppingCartIcon className="h-5 w-5 mr-1 group-md:hover:text-rastaDark" />
                 Añadir al Carrito
               </button>
               <button
-                className="group px-4 py-2 bg-black bg-opacity-80 border border-white rounded-lg text-rastaLight flex items-center justify-center transition-all duration-300 hover:bg-gradient-to-r from-rastaGreen-900 to-rastaGreen-700"
+                className="group px-4 py-2 bg-black bg-opacity-80 border border-white rounded-lg text-rastaLight flex items-center justify-center transition-all duration-300 md:hover:bg-gradient-to-r from-rastaGreen-900 to-rastaGreen-700"
               >
-                <BanknotesIcon className="h-5 w-5 mr-1 group-hover:text-rastaDark" />
+                <BanknotesIcon className="h-5 w-5 mr-1 group-md:hover:text-rastaDark" />
                 Comprar Ahora
               </button>
             </div>
@@ -452,7 +452,7 @@ const ProductDetail = () => {
 
         {/* Details and Specifications Section */}
         <div className="mt-8 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 p-4 rounded-lg bg-black bg-opacity-75 transition duration-300 hover:shadow-lg">
+          <div className="flex-1 p-4 rounded-lg bg-black bg-opacity-75 transition duration-300 md:hover:shadow-lg">
             <h2 className="text-2xl font-bold mb-2 font-rasta-heading">
               Detalles
             </h2>
@@ -460,7 +460,7 @@ const ProductDetail = () => {
           </div>
 
           {product.specifications && (
-            <div className="flex-1 p-4 rounded-lg bg-black bg-opacity-75 transition duration-300 hover:shadow-lg">
+            <div className="flex-1 p-4 rounded-lg bg-black bg-opacity-75 transition duration-300 md:hover:shadow-lg">
               <h2 className="text-2xl font-bold mb-2 font-rasta-heading">
                 Especificaciones
               </h2>
@@ -494,9 +494,9 @@ const ProductDetail = () => {
                 <Link
                   to={`/products/${product.id}`}
                   key={product.id}
-                  className="block"
+                  className="block bouncy-shrink"
                 >
-                  <div className="rasta-card-gradient rasta-card-frame product-card rounded-lg hover:shadow-lg flex flex-col h-full overflow-hidden shadow-inner transform hover:scale-105 transition duration-300">
+                  <div className="rasta-card-gradient rasta-card-frame product-card rounded-lg md:hover:shadow-lg flex flex-col h-full overflow-hidden shadow-inner transform md:hover:scale-105 transition duration-300">
                     <img
                       src={product.images[0]}
                       alt={product.name}

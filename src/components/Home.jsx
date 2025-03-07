@@ -72,8 +72,8 @@ const Home = () => {
         </div>
         <div className="container mx-auto px-8 mt-8 grid grid-cols-1 md:grid-cols-4 gap-6"> {/* px-4 changed to px-8 */}
           {featuredProducts.map((product) => (
-                <Link to={`/products/${product.id}`} key={product.id} className="block mx-2 md:mx-4 transform hover:scale-105 transition duration-300 w-full max-w-xs"> {/* Responsive width w-full max-w-xs added */}
-                  <div className="rasta-card-gradient rounded-md hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner">
+                <Link to={`/products/${product.id}`} key={product.id} className="block mx-2 md:mx-4 transform  transition duration-300 w-full max-w-xs bouncy-shrink"> {/* Responsive width w-full max-w-xs added */}
+                  <div className="rasta-card-gradient rounded-md md:hover:shadow-lg flex flex-col h-72 overflow-hidden shadow-inner">
                     <img src={product.imageUrl} alt={product.name} className="w-full h-56 object-cover rounded-t-md mb-3" />
                     <div className="px-4 py-2 flex flex-col items-center justify-center flex-grow text-center">
                         <h2 className="product-card-title text-lg mb-1 text-gray-100 truncate">{product.name}</h2>
