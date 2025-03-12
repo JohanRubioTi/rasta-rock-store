@@ -24,7 +24,12 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full p-4 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 animate-gradient-slow">
+    <div className="min-h-screen w-full p-4" style={{
+      background: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(34,139,34,0.1) 70%, rgba(255,255,0,0.1) 72%, rgba(255,0,0,0.1) 74%, rgba(0,0,0,0.7) 75%, rgba(0,0,0,0.7) 100%)",
+      animation: "gradient-shift 150s linear infinite",
+      backgroundSize: "200% 100%",
+      background: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(34,139,34,0.2) 70%, rgba(255,255,0,0.2) 72%, rgba(255,0,0,0.2) 74%, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0.8) 100%)"
+    }}>
       <h1 className="text-3xl font-bold mb-4 text-white">Panel de Administración</h1>
       <TabNavigation activeTab={activeTab} onChange={setActiveTab} />
       {activeTab === "Productos" && (
