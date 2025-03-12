@@ -24,9 +24,15 @@ const OrdersManagement = () => {
     setRefundModalOpen(true);
   };
 
-  const handleShipmentUpdate = (tracking) => {
-    const updatedOrders = orders.map(order =>
-      order.id === selectedOrder.id ? { ...order, tracking, status: "Shipped" } : order
+  const handleShipmentUpdate = (trackingCode, trackingLink) => {
+    const updatedOrders = orders.map(order => 
+      order.id === selectedOrder.id 
+        ? { 
+          ...order, 
+          shipment: { trackingCode, trackingLink },
+          orderStatus: 'shipped' 
+        } 
+        : order
     );
     setAdminState(prev => ({ ...prev, orders: updatedOrders }));
     setShipmentModalOpen(false);
@@ -59,14 +65,20 @@ const OrdersManagement = () => {
             <tr key={order.id} className="text-gray-200">
               <td className="py-2 px-4">{order.id}</td>
               <td className="py-2 px-4">{order.customer}</td>
-              <td className="py-2 px-4">{order.status}</td>
-              <td className="py-2 px-4">{order.tracking || "N/A"}</td>
+              <td className="py-2 px-4">{order.orderStatus}</td>
+              <td className="py-2 px-4">{order.shipment?.trackingCode || "N/A"}</td>
               <td className="py-2 px-4">{order.refundStatus}</td>
               <td className="py-2 px-4">
-                <button onClick={() => openShipmentModal(order)} className="bg-blue-500 text-white px-2 py-1 m-1 rounded">
-                  Manage Shipment
+                <button 
+                  onClick={() => openShipmentModal(order)} 
+                  className="bg-blue-500 text-white px-2 py-1 m-1 rounded"
+                >
+                  Ship Order
                 </button>
-                <button onClick={() => openRefundModal(order)} className="bg-yellow-500 text-white px-2 py-1 m-1 rounded">
+                <button 
+                  onClick={() => openRefundModal(order)} 
+                  className="bg-yellow-500 text-white px-2 py-1 m-1 rounded"
+                >
                   Process Refund
                 </button>
               </td>

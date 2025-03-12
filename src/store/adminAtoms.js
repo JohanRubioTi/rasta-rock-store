@@ -126,6 +126,10 @@ export const adminStateAtom = atom({
         transactionId: null
       },
       orderStatus: 'processing',
+      shipment: {
+        trackingCode: '',
+        trackingLink: ''
+      },
       createdAt: "2025-03-07T17:00:00Z"
     }
     // Additional orders

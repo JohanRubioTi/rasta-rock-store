@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
 const ShipmentModal = ({ modalOpen, order, onClose, onSubmit }) => {
-  const [tracking, setTracking] = useState("");
+  const [trackingCode, setTrackingCode] = useState("");
+  const [trackingLink, setTrackingLink] = useState("");
 
   useEffect(() => {
-    if (order) {
-      setTracking(order.tracking || "");
+    if (order && order.shipment) {
+      setTrackingCode(order.shipment.trackingCode || "");
+      setTrackingLink(order.shipment.trackingLink || "");
     }
   }, [order]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(tracking);
+    onSubmit(trackingCode, trackingLink);
   };
 
   if (!modalOpen) return null;
@@ -25,10 +27,20 @@ const ShipmentModal = ({ modalOpen, order, onClose, onSubmit }) => {
             <label className="block text-white">Tracking Code</label>
             <input
               type="text"
-              value={tracking}
-              onChange={(e) => setTracking(e.target.value)}
+              value={trackingCode}
+              onChange={(e) => setTrackingCode(e.target.value)}
               className="w-full p-2 rounded"
               placeholder="Enter tracking code"
+            />
+          </div>
+          <div>
+            <label className="block text-white">Tracking Link</label>
+            <input
+              type="url"
+              value={trackingLink}
+              onChange={(e) => setTrackingLink(e.target.value)}
+              className="w-full p-2 rounded"
+              placeholder="Enter tracking URL"
             />
           </div>
           <div className="flex justify-end space-x-4">
