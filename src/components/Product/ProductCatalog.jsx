@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { adminStateAtom } from '../../store/adminAtoms';
 import Navbar from '../Navbar';
 import ThreeDScene from '../ThreeDScene';
 import { ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/solid';
@@ -8,32 +10,22 @@ const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const productsData = [
-    { id: 1, name: 'Gorro Rasta', description: 'Gorro Rasta cálido y estiloso.', price: 25, imageUrl: 'https://placehold.co/400', category: 'clothing' },
-    { id: 2, name: 'Camiseta Bob Marley', description: 'Camiseta clásica de Bob Marley.', price: 30, imageUrl: 'https://placehold.co/400', category: 'clothing' },
-    { id: 3, name: 'Collar Signo de la Paz', description: 'Elegante collar con signo de la paz.', price: 15, imageUrl: 'https://placehold.co/400', category: 'accessories' },
-    { id: 4, name: 'Set de Pulseras Rasta', description: 'Set de pulseras Rasta coloridas.', price: 20, imageUrl: 'https://placehold.co/400', category: 'accessories' },
-    { id: 5, name: 'Papel de Liar - Tamaño King', description: 'Papel de liar tamaño king.', price: 5, imageUrl: 'https://placehold.co/400', category: 'smoke-accessories' },
-    { id: 6, name: 'Grinder de Hierbas', description: 'Grinder de hierbas de alta calidad.', price: 35, imageUrl: 'https://placehold.co/400', category: 'smoke-accessories' },
-    { id: 7, name: 'Posavasos Rasta Hechos a Mano', description: 'Set de posavasos Rasta hechos a mano.', price: 22, imageUrl: 'https://placehold.co/400', category: 'handmade-decorations' },
-    { id: 8, name: 'Tapiz Rasta', description: 'Vibrante decoración de pared Rasta.', price: 40, imageUrl: 'https://placehold.co/400', category: 'handmade-decorations' },
-    { id: 9, name: 'Piercing de Nariz - Oro', description: 'Piercing de nariz de oro.', price: 18, imageUrl: 'https://placehold.co/400', category: 'piercings' },
-    { id: 10, name: 'Piercing de Oreja - Aros de Plata', description: 'Piercings de oreja de aros de plata.', price: 28, imageUrl: 'https://placehold.co/400', category: 'piercings' },
-  ];
 
-  const categories = ['all', 'accessories', 'clothing', 'smoke-accessories', 'handmade-decorations', 'piercings'];
+  const [adminState] = useAtom(adminStateAtom);
+  const productsData = adminState.products;
+  const categories = adminState.categories;
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('price-low-high');
 
   useEffect(() => {
     const urlCategory = searchParams.get('category');
-    if (urlCategory && categories.includes(urlCategory)) {
+    if (urlCategory && categories.find(cat => cat.id === urlCategory)) {
       setSelectedCategory(urlCategory);
     } else {
       setSelectedCategory('all');
     }
-  }, [searchParams]);
+  }, [searchParams, categories]);
 
   const filteredProducts = productsData.filter(product => {
     const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
@@ -99,18 +91,13 @@ const ProductCatalog = () => {
                   </div>
                 </div>
                 <div className="mb-4 flex flex-col space-y-2 ">
-                  {categories.map(category => (
+                  {categories.map(cat => (
                     <button
-                      key={category}
-                      className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-fit ${selectedCategory === category ? 'filter-button-active' : ''}`}
-                      onClick={() => setSelectedCategory(category)}
+                      key={cat.id}
+                      className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-fit ${selectedCategory === cat.id ? 'filter-button-active' : ''}`}
+                      onClick={() => setSelectedCategory(cat.id)}
                     >
-                      {category === 'all' ? 'Todos' :
-                        category === 'accessories' ? 'Accesorios' :
-                          category === 'clothing' ? 'Ropa' :
-                            category === 'smoke-accessories' ? 'Accesorios de Fumar' :
-                              category === 'handmade-decorations' ? 'Decoración Artesanal' :
-                                category === 'piercings' ? 'Piercings' : ''}
+                      {cat.name}
                     </button>
                   ))}
                 </div>
@@ -182,18 +169,13 @@ const ProductCatalog = () => {
             </div>
           </div>
           <div className="mb-4 flex flex-col space-y-4">
-            {categories.map(category => (
+            {categories.map(cat => (
               <button
-                key={category}
-                className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-auto ${selectedCategory === category ? 'filter-button-active' : ''}`}
-                onClick={() => { setSelectedCategory(category); setShowMobileFilters(false); }}
+                key={cat.id}
+                className={`nav-link font-rasta-nav-links uppercase inline-flex whitespace-nowrap w-auto ${selectedCategory === cat.id ? 'filter-button-active' : ''}`}
+                onClick={() => { setSelectedCategory(cat.id); setShowMobileFilters(false); }}
               >
-                {category === 'all' ? 'Todos' :
-                  category === 'accessories' ? 'Accesorios' :
-                    category === 'clothing' ? 'Ropa' :
-                      category === 'smoke-accessories' ? 'Accesorios de Fumar' :
-                        category === 'handmade-decorations' ? 'Decoración Artesanal' :
-                          category === 'piercings' ? 'Piercings' : ''}
+                {cat.name}
               </button>
             ))}
           </div>
