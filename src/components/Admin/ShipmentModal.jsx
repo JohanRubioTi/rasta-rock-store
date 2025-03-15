@@ -21,26 +21,26 @@ const ShipmentModal = ({ modalOpen, order, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="rasta-card-gradient rasta-card-frame p-6 rounded-lg w-full max-w-lg mx-auto">
-        <h2 className="text-2xl mb-4">Manage Shipment for Order #{order.id}</h2>
+        <h2 className="text-2xl mb-4">Gestionar Envío para el Pedido #{order.id}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-white">Tracking Code</label>
+            <label className="block text-white">Código de Seguimiento</label>
             <input
               type="text"
               value={trackingCode}
               onChange={(e) => setTrackingCode(e.target.value)}
               className="w-full p-2 rounded"
-              placeholder="Enter tracking code"
+              placeholder="Ingrese el código de seguimiento"
             />
           </div>
           <div>
-            <label className="block text-white">Tracking Link</label>
+            <label className="block text-white">Enlace de Seguimiento</label>
             <input
               type="url"
               value={trackingLink}
               onChange={(e) => setTrackingLink(e.target.value)}
               className="w-full p-2 rounded"
-              placeholder="Enter tracking URL"
+              placeholder="Ingrese la URL de seguimiento"
             />
           </div>
           <div className="flex justify-end space-x-4">
@@ -49,13 +49,13 @@ const ShipmentModal = ({ modalOpen, order, onClose, onSubmit }) => {
               onClick={onClose}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              Update Shipment
+              Actualizar Envío
             </button>
           </div>
         </form>

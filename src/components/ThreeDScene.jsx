@@ -72,7 +72,61 @@ const ThreeDScene = ({ variant }) => {
         camera.fov = 75; // Decreased FOV for larger initial size
         camera.updateProjectionMatrix();
         camera.lookAt(0, 0, 0);
+      } else if (variant === 'kyrie') {
+        // New scene for Kyrie
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xffffff, 0.8);
+        pointLight1.position.set(5, 10, 15);
+        scene.add(pointLight1);
+
+        camera.position.z = 20;
+        new RGBELoader()
+          .setPath('/textures/')
+          .load('studio_small_08_1k.hdr', (texture) => {
+            loadedTexture = texture;
+            loadedTexture.mapping = THREE.EquirectangularReflectionMapping;
+            createNotes();
+          });
       }
+    };
+
+    const createNotes = () => {
+      if (!loadedTexture || !scene) return;
+
+      group = new THREE.Group();
+
+      const noteGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+      const noteMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.6,
+        roughness: 0.4,
+        envMap: loadedTexture,
+      });
+
+      const numNotes = 20;
+      for (let i = 0; i < numNotes; i++) {
+        const noteMesh = new THREE.Mesh(noteGeometry, noteMaterial);
+
+        // Random position
+        const x = (Math.random() - 0.5) * 20;
+        const y = (Math.random() - 0.5) * 10;
+        const z = (Math.random() - 0.5) * 10;
+        noteMesh.position.set(x, y, z);
+
+        // Random rotation
+        noteMesh.rotation.x = Math.random() * Math.PI * 2;
+        noteMesh.rotation.y = Math.random() * Math.PI * 2;
+
+        // Random scale
+        const scale = 0.5 + Math.random() * 0.5;
+        noteMesh.scale.set(scale, scale, scale);
+
+        group.add(noteMesh);
+      }
+      scene.add(group);
+      scene.environment = loadedTexture;
     };
 
     const createText = () => {
@@ -344,11 +398,17 @@ const ThreeDScene = ({ variant }) => {
       } else if (variant === 'grid' && group) {
         shaderMaterial.uniforms.time.value = clock.getElapsedTime();
         group.rotation.y = clock.getElapsedTime() * 0.05;
+      } else if (variant === 'kyrie' && group) {
+        // Animate notes
+        group.children.forEach((note) => {
+          note.rotation.x += delta * 0.1;
+          note.rotation.y += delta * 0.2;
+        });
       }
 
-   if (camera) {
-         camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
-         updateCameraPosition();
+      if (camera) {
+        camera.lookAt(camera.position.clone().lerp(targetLookAt, damping));
+        updateCameraPosition();
       }
    if (textMesh) {
          const currentScroll = window.scrollY;

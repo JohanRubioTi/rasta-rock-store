@@ -6,10 +6,10 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="rasta-card-gradient rasta-card-frame p-6 rounded-lg w-full max-w-lg mx-auto">
-        <h2 className="text-2xl mb-4">{isEditing ? 'Edit Product' : 'Add Product'}</h2>
+        <h2 className="text-2xl mb-4">{isEditing ? 'Editar Producto' : 'Agregar Producto'}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-white">Name</label>
+            <label className="block text-white">Nombre</label>
             <input
               type="text"
               name="name"
@@ -20,7 +20,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Subtitle</label>
+            <label className="block text-white">Subtítulo</label>
             <input
               type="text"
               name="subtitle"
@@ -30,7 +30,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Description</label>
+            <label className="block text-white">Descripción</label>
             <textarea
               name="description"
               value={formData.description}
@@ -40,7 +40,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Price</label>
+            <label className="block text-white">Precio</label>
             <input
               type="number"
               name="price"
@@ -51,7 +51,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Images (comma separated URLs)</label>
+            <label className="block text-white">Imágenes (URLs separadas por comas)</label>
             <input
               type="text"
               name="images"
@@ -67,7 +67,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
                 <div className="mt-2">
                   <img 
                     src={validUrl}
-                    alt="Product preview"
+                    alt="Vista previa del producto"
                     onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400"; }}
                     className="w-full h-auto rounded"
                   />
@@ -75,7 +75,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
               );
             })()}
           <div>
-            <label className="block text-white">Category</label>
+            <label className="block text-white">Categoría</label>
             <input
               type="text"
               name="category"
@@ -86,7 +86,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Colors (comma separated)</label>
+            <label className="block text-white">Colores (separados por comas)</label>
             <input
               type="text"
               name="colors"
@@ -96,7 +96,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Has Sizes</label>
+            <label className="block text-white">Tiene Tallas</label>
             <input
               type="checkbox"
               name="hasSizes"
@@ -106,7 +106,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Details</label>
+            <label className="block text-white">Detalles</label>
             <textarea
               name="details"
               value={formData.details}
@@ -115,7 +115,7 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
             />
           </div>
           <div>
-            <label className="block text-white">Specifications (JSON format)</label>
+            <label className="block text-white">Especificaciones (formato JSON)</label>
             <textarea
               name="specifications"
               value={formData.specifications}
@@ -129,13 +129,13 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
               onClick={onClose}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               className="bg-rastaGreen text-white px-4 py-2 rounded hover:bg-green-600"
             >
-              Save
+              Guardar
             </button>
           </div>
         </form>

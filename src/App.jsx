@@ -4,26 +4,29 @@ import React, { useState } from 'react';
     import ProductCatalog from './components/Product/ProductCatalog';
     import ProductDetail from './components/Product/ProductDetail';
     import BandPage from './components/Band/BandPage';
-    import Home from './components/Home';
+import Home from './components/Home';
+import Login from './components/Login';
+import Register from './components/Register';
 
-    function App() {
-      const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-      const location = useLocation(); // Get current location
+function App() {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const location = useLocation(); // Get current location
 
-      return (
-        <div className="font-rasta-body">
-          {/* Navbar REMOVED from App.jsx - now in Home and ProductCatalog */}
+  return (
+    <div className="font-rasta-body">
+      {/* Navbar REMOVED from App.jsx - now in Home and ProductCatalog */}
 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/products" element={<ProductCatalog />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/bands" element={<BandPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </div>
+  );
+}
 
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/products" element={<ProductCatalog />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/bands" element={<BandPage />} />
-          </Routes>
-        </div>
-      );
-    }
-
-    export default App;
+export default App;

@@ -14,6 +14,8 @@
             rastaDark: '#222', // Dark background
             rastaLight: '#eee', // Light text color
             rastaCardBg: '#2a372e', // Dark desaturated rasta green for cards
+            'rasta-tab-active': '#1a4d22', // Dark green
+            'rasta-tab-inactive': '#2a372e', // Desaturated green
           },
           fontFamily: {
             'rasta-banner-heading': ['Bangers', 'cursive'],
@@ -45,6 +47,16 @@
           '0%, 100%': { backgroundPosition: '200% 0%' },
           '50%': { backgroundPosition: '0% 200%' },
         },
+  'gradient-x': {
+          '0%, 100%': {
+              'background-size':'200% 200%',
+              'background-position': 'left center'
+          },
+          '50%': {
+              'background-size':'200% 200%',
+              'background-position': 'right center'
+          }
+      },
       },
       backgroundImage: {
         'dynamic-gradient': 'linear-gradient(270deg, #F7D046, #34B44A, #2a8a3d, #1a4d22, #E03A3E)', // Yellow and green at start
