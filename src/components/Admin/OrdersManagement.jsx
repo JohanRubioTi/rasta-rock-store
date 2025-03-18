@@ -1,18 +1,47 @@
-import React, { useState } from 'react';
-import { useAtom } from 'jotai';
-import { adminStateAtom } from '../../store/adminAtoms';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../supabaseClient';
 import ShipmentModal from './ShipmentModal';
 import RefundModal from './RefundModal';
 
 const OrdersManagement = () => {
-  const [adminState, setAdminState] = useAtom(adminStateAtom);
-  const orders = adminState.orders || [
-    { id: 1, customer: "Cliente", status: "Pendiente", tracking: "", refundStatus: "Ninguno" },
-    { id: 2, customer: "Cliente", status: "Enviado", tracking: "TRK123", refundStatus: "Ninguno" },
-  ];
+  const [orders, setOrders] = useState([]);
   const [shipmentModalOpen, setShipmentModalOpen] = useState(false);
   const [refundModalOpen, setRefundModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const { data, error } = await supabase.from('orders').select('*');
+      if (error) {
+        console.error('Error fetching orders:', error);
+      } else {
+        // Map the fetched data to match the expected structure
+        const formattedOrders = data.map(order => ({
+            id: order.id,
+            customer: order.buyer_name, // Assuming buyer_name is the customer's name
+            orderStatus: order.order_status,
+            shipment: {
+              trackingCode: order.shipment_tracking_code,
+              trackingLink: order.shipment_tracking_link,
+            },
+            refundStatus: order.refundStatus || "Ninguno", // Assuming a refundStatus field exists
+            items: order.items,
+            buyer: {
+                name: order.buyer_name,
+                address: order.buyer_address
+            },
+            payment: {
+                status: order.payment_status,
+                transactionId: order.transaction_id
+            },
+            createdAt: order.created_at
+        }));
+        setOrders(formattedOrders);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const openShipmentModal = (order) => {
     setSelectedOrder(order);
@@ -24,29 +53,56 @@ const OrdersManagement = () => {
     setRefundModalOpen(true);
   };
 
-  const handleShipmentUpdate = (trackingCode, trackingLink) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === selectedOrder.id
-        ? {
-            ...order,
-            shipment: { trackingCode, trackingLink },
-            orderStatus: 'enviado',
-          }
-        : order
-    );
-    setAdminState((prev) => ({ ...prev, orders: updatedOrders }));
-    setShipmentModalOpen(false);
+ const handleShipmentUpdate = async (trackingCode, trackingLink) => {
+    if (!selectedOrder) return;
+
+    const updatedOrder = {
+      shipment_tracking_code: trackingCode,
+      shipment_tracking_link: trackingLink,
+      order_status: 'shipped',
+    };
+
+    const { error } = await supabase.from('orders').update(updatedOrder).eq('id', selectedOrder.id);
+
+    if (error) {
+      console.error('Error updating shipment:', error);
+      alert('Error updating shipment: ' + error.message);
+    } else {
+      // Update local state to reflect the changes
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === selectedOrder.id
+            ? { ...order, shipment: { trackingCode, trackingLink }, orderStatus: 'shipped' }
+            : order
+        )
+      );
+      setShipmentModalOpen(false);
+    }
   };
 
-  const handleRefundProcess = (refundStatus) => {
-    const updatedOrders = orders.map(order =>
-      order.id === selectedOrder.id ? { ...order, refundStatus } : order
-    );
-    setAdminState(prev => ({ ...prev, orders: updatedOrders }));
-    setRefundModalOpen(false);
+  const handleRefundProcess = async (refundStatus) => {
+    if (!selectedOrder) return;
+
+    const updatedOrder = {
+      refundStatus: refundStatus,
+    };
+
+    const { error } = await supabase.from('orders').update(updatedOrder).eq('id', selectedOrder.id);
+
+    if (error) {
+      console.error('Error updating refund status:', error);
+      alert('Error updating refund status: ' + error.message);
+    } else {
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === selectedOrder.id ? { ...order, refundStatus } : order
+        )
+      );
+      setRefundModalOpen(false);
+    }
   };
 
-return (
+    return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4 text-white">Gestión de Pedidos</h2>
       <table className="w-full">

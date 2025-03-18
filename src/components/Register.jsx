@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
-import { useAtom } from 'jotai';
-import { userAtom, isAuthenticatedAtom } from '../store/adminAtoms';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility
-  const [, setUser] = useAtom(userAtom);
-  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
@@ -21,12 +19,16 @@ const Register = () => {
       return;
     }
 
-    // Hardcoded registration for demonstration
-    if (username === 'newuser' && password === 'password') {
-      setUser({ username: 'newuser', isAdmin: false });
-      setIsAuthenticated(true);
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
     } else {
-      setError('Registration failed. Please try a different username.');
+      // Redirect to some welcome or verify email page
+      navigate('/login'); // Or any other appropriate route after signup
     }
   };
 
@@ -41,12 +43,12 @@ const Register = () => {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block mb-1 font-semibold">Usuario:</label>
+            <label htmlFor="email" className="block mb-1 font-semibold">Email:</label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="price-filter-select block w-full"
             />
           </div>
@@ -54,11 +56,11 @@ const Register = () => {
             <label htmlFor="password" className="block mb-1 font-semibold">Contraseña:</label>
             <div className="relative">
               <input
-                type={isPasswordVisible ? 'text' : 'password'} // Toggle input type
+                type={isPasswordVisible ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="price-filter-select block w-full pr-10" // Add padding for icon
+                className="price-filter-select block w-full pr-10"
               />
               <button
                 type="button"
@@ -66,9 +68,9 @@ const Register = () => {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
               >
                 {isPasswordVisible ? (
-                  <span>👁️</span> // Visible icon (replace with actual icon later)
+                  <span>👁️</span>
                 ) : (
-                  <span>🔒</span> // Hidden icon (replace with actual icon later)
+                  <span>🔒</span>
                 )}
               </button>
             </div>
@@ -77,11 +79,11 @@ const Register = () => {
             <label htmlFor="confirmPassword" className="block mb-1 font-semibold">Confirmar Contraseña:</label>
             <div className="relative">
               <input
-                type={isPasswordVisible ? 'text' : 'password'} // Toggle input type
+                type={isPasswordVisible ? 'text' : 'password'}
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="price-filter-select block w-full pr-10" // Add padding for icon
+                className="price-filter-select block w-full pr-10"
               />
               <button
                 type="button"
@@ -89,9 +91,9 @@ const Register = () => {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
               >
                 {isPasswordVisible ? (
-                  <span>👁️</span> // Visible icon (replace with actual icon later)
+                  <span>👁️</span>
                 ) : (
-                  <span>🔒</span> // Hidden icon (replace with actual icon later)
+                  <span>🔒</span>
                 )}
               </button>
             </div>

@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { userAtom, isAuthenticatedAtom } from '../store/adminAtoms';
+import { supabase } from '../supabaseClient';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [user, setUser] = useAtom(userAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const location = useLocation();
+  const navigate = useNavigate();
   const showCategories = location.pathname !== '/products'; // Conditionally show categories
 
-  const handleLogout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-  }
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Logout error:', error);
+      alert('Error logging out');
+    } else {
+      setUser(null);
+      setIsAuthenticated(false);
+      navigate('/login'); // Redirect to login page after logout
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 text-rastaLight font-bold">

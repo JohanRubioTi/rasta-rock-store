@@ -1,29 +1,40 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
-import { useAtom } from 'jotai';
-import { userAtom, isAuthenticatedAtom } from '../store/adminAtoms';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for password visibility
-  const [, setUser] = useAtom(userAtom);
-  const [, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Redirect to admin if session exists
+        navigate('/admin');
+      }
+    };
+
+    checkExistingSession();
+  }, [navigate]); // Add navigate as dependency
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
-    // Hardcoded credentials for demonstration purposes
-    if (username === 'admin' && password === 'password') {
-      setUser({ username: 'admin', isAdmin: true });
-      setIsAuthenticated(true);
-    } else if (username === 'user' && password === 'password') {
-      setUser({ username: 'user', isAdmin: false });
-      setIsAuthenticated(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
     } else {
-      setError('Invalid credentials');
+      // Redirect to admin page on successful login
+      navigate('/admin');
     }
   };
 
@@ -38,12 +49,12 @@ const Login = () => {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block mb-1 font-semibold">Usuario:</label>
+            <label htmlFor="email" className="block mb-1 font-semibold">Email:</label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="price-filter-select block w-full"
             />
           </div>
@@ -51,21 +62,21 @@ const Login = () => {
             <label htmlFor="password" className="block mb-1 font-semibold">Contraseña:</label>
             <div className="relative">
               <input
-                type={isPasswordVisible ? 'text' : 'password'} // Toggle input type
+                type={isPasswordVisible ? 'text' : 'password'}
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="price-filter-select block w-full pr-10" // Add padding for icon
+                className="price-filter-select block w-full pr-10"
               />
               <button
-                type="button" // Prevent form submission
+                type="button"
                 onClick={togglePasswordVisibility}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
               >
                 {isPasswordVisible ? (
-                  <span>👁️</span> // Visible icon (replace with actual icon later)
+                  <span>👁️</span>
                 ) : (
-                  <span>🔒</span> // Hidden icon (replace with actual icon later)
+                  <span>🔒</span>
                 )}
               </button>
             </div>

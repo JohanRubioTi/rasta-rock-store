@@ -1,16 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { adminStateAtom } from '../../store/adminAtoms';
+import { supabase } from '../../supabaseClient';
 import { PencilIcon, CheckIcon, XMarkIcon, PlusIcon, TrashIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const ProductTab = () => {
-  const [adminState, setAdminState] = useAtom(adminStateAtom);
-  const initialProducts = adminState.products || [];
-  const initialCategories = adminState.categories || [];
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [editingProducts, setEditingProducts] = useState([]);
+  const [editingRows, setEditingRows] = useState({});
+  const [newProductIds, setNewProductIds] = useState([]); // Track IDs of newly added products
+    // For sizes tag editor, track temporary new size input per product.
+  const [newSizeInput, setNewSizeInput] = useState({});
 
-  // Extend categories with additional fields if not present.
-  const extendedCategories = initialCategories.map(cat => {
+
+  // Fetch initial data
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) {
+        console.error('Error fetching products:', error);
+      } else {
+        setProducts(data);
+        setEditingProducts(data); // Initialize editingProducts
+      }
+    };
+
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from('categories').select('*');
+      if (error) {
+        console.error('Error fetching categories:', error);
+      } else {
+        setCategories(data);
+      }
+    };
+
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+    // Extend categories with additional fields if not present.
+    const extendedCategories = categories.map(cat => {
     // Default: 'clothing' supports sizes and colors; accessories and handmade-decorations support colors.
     let supportsSizes = false;
     let supportsColors = false;
@@ -23,20 +52,10 @@ const ProductTab = () => {
     return { ...cat, supportsSizes, supportsColors };
   });
 
-  const [editingProducts, setEditingProducts] = useState(initialProducts);
-  const [editingRows, setEditingRows] = useState({});
-  const [newProductIds, setNewProductIds] = useState([]); // Track IDs of newly added products
-  // For sizes tag editor, track temporary new size input per product.
-  const [newSizeInput, setNewSizeInput] = useState({});
-
-  // Sync editingProducts with adminState.products changes
-  useEffect(() => {
-    setEditingProducts(adminState.products);
-  }, [adminState.products]);
-
-  const updateProducts = (updatedProducts) => {
+ const updateProducts = (updatedProducts) => {
+    console.log('Before update - editingProducts:', editingProducts);
     setEditingProducts(updatedProducts);
-    setAdminState({ ...adminState, products: updatedProducts });
+    console.log('After update - editingProducts:', editingProducts);
   };
 
   const toggleEditRow = (productId) => {
@@ -47,107 +66,111 @@ const ProductTab = () => {
     }
   };
 
-  const cancelEditRow = (productId) => {
+const cancelEditRow = (productId) => {
     const isNewProduct = newProductIds.includes(productId);
 
-    let updatedProducts;
     if (isNewProduct) {
       // If it's a new product, remove it from editingProducts and newProductIds.
-      updatedProducts = editingProducts.filter(p => p.id !== productId);
+      setEditingProducts(prev => prev.filter(p => p.id !== productId));
       setNewProductIds(prevIds => prevIds.filter(id => id !== productId));
+      // Also remove from products to keep UI consistent
+      setProducts(prev => prev.filter(p => p.id !== productId));
     } else {
-      // If it's an existing product, revert to the original value from adminState.products.
-      const originalProduct = adminState.products.find(p => p.id === productId);
-      updatedProducts = editingProducts.map(product =>
-        product.id === productId ? (originalProduct || product) : product
-      );
-    }
-    updateProducts(updatedProducts);
-    // Revert changes made by handleCellUpdate
-    const revertedProducts = editingProducts.map(product => {
-      if (product.id === productId) {
-        return originalProduct || product;
+      // If it's an existing product, revert to the original value from the 'products' state.
+      const originalProduct = products.find(p => p.id === productId);
+      if (originalProduct) {
+        setEditingProducts(prev =>
+          prev.map(product => (product.id === productId ? originalProduct : product))
+        );
       }
-      return product;
-    });
-    updateProducts(revertedProducts);
+    }
+
     setEditingRows(prev => ({ ...prev, [productId]: false }));
+     // Clear new size input when toggling edit off.
     setNewSizeInput(prev => ({ ...prev, [productId]: "" }));
   };
 
   const handleCellUpdate = (productId, field, newValue) => {
-    const updatedProducts = editingProducts.map(product => {
-      if (product.id === productId) {
-        let updatedValue = newValue;
-        if (field === 'price') {
-          updatedValue = Number(newValue);
-          if (isNaN(updatedValue) || updatedValue <= 0) {
-            alert("Por favor, ingrese un precio válido mayor a cero.");
-            return product; // Return original product to avoid updating state
+    setEditingProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (product.id === productId) {
+          let updatedValue = newValue;
+          if (field === "price") {
+            updatedValue = Number(newValue);
+            if (isNaN(updatedValue) || updatedValue <= 0) {
+              alert("Por favor, ingrese un precio válido mayor a cero.");
+              return product; // Return original product to avoid updating state
+            }
+          } else if (field === "name") {
+            if (!newValue) {
+              alert("Por favor, ingrese un nombre de producto válido.");
+              return product;
+            }
+          } else if (field === "hasSize") {
+            updatedValue = newValue;
+            // Reset sizes to an empty array if hasSize is toggled to false
+            return {
+              ...product,
+              hasSize: updatedValue,
+              sizes: updatedValue ? product.sizes || [] : [],
+            };
+          } else if (field === "hasColor") {
+            updatedValue = newValue;
+            // Reset colors to an empty array if hasColor is toggled to false
+            return {
+              ...product,
+              hasColor: updatedValue,
+              colors: updatedValue ? product.colors || [] : [],
+            };
           }
-        } else if (field === 'name') {
-          if (!newValue) {
-            alert("Por favor, ingrese un nombre de producto válido.");
-            return product;
-          }
-        } else if (field === 'hasSize') {
-          updatedValue = newValue;
-          // If hasSize is true, initialize sizes to an empty array. Otherwise, set to null.
-          return { ...product, hasSize: updatedValue, sizes: updatedValue ? [] : null };
-        } else if (field === 'hasColor') {
-          updatedValue = newValue;
-          // If hasColor is true, initialize colors to an empty array. Otherwise, set to null.
-          return { ...product, hasColor: updatedValue, colors: updatedValue ? [] : null };
+          return { ...product, [field]: updatedValue };
         }
-        return { ...product, [field]: updatedValue };
-      }
-      return product;
-    });
-    updateProducts(updatedProducts);
+        return product;
+      })
+    );
   };
 
   const handleSelectChange = (productId, value) => {
-    const updatedProducts = editingProducts.map(product => {
-      if (product.id === productId) {
-        return { ...product, category: value };
-      }
-      return product;
-    });
-    updateProducts(updatedProducts);
-  };
+      const updatedProducts = editingProducts.map(product => {
+        if (product.id === productId) {
+          return { ...product, category: value };
+        }
+        return product;
+      });
+      updateProducts(updatedProducts);
+    };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     const newId =
       editingProducts.length > 0
         ? Math.max(...editingProducts.map(p => Number(p.id))) + 1
         : 1;
     const defaultCategory = extendedCategories.length > 0 ? extendedCategories[0].id : "";
     const categoryInfo = extendedCategories.find(cat => cat.id === defaultCategory);
+
     const newProduct = {
-      id: newId,
-      name: '', // Start with empty name for validation
-      subtitle: '',
+      id: newId, // This will be overwritten by Supabase, but we keep it for local state management
+      name: '',
       description: '',
       price: 0,
-      images: [],
+      image_urls: [],
       category: defaultCategory,
-      colors: categoryInfo && categoryInfo.supportsColors ? [] : null,
-      sizes: categoryInfo && categoryInfo.supportsSizes ? [] : null,
-      details: '',
-      specifications: '',
+      has_size: categoryInfo?.supportsSizes || false,
+      has_color: categoryInfo?.supportsColors || false,
+      sizes: categoryInfo?.supportsSizes ? [] : [],
+      colors: categoryInfo?.supportsColors ? [] : [],
       inventory: 0,
-      hasSize: false,
-      hasColor: false,
     };
 
-    // Add the new product to the state *before* validation (but in edit mode)
-    const updatedProducts = [newProduct, ...editingProducts];
-    updateProducts(updatedProducts);
-    setEditingRows(prev => ({ ...prev, [newId]: true })); // Enable edit mode for the new product
-    setNewProductIds(prevIds => [...prevIds, newId]); // Track the ID as a new product
+    // Add to editingProducts and newProductIds
+    setEditingProducts(prev => [newProduct, ...prev]);
+    setNewProductIds(prev => [...prev, newId]);
+    setEditingRows(prev => ({ ...prev, [newId]: true }));
+     // Add to products as well for immediate UI update
+    setProducts(prev => [newProduct, ...prev]);
   };
 
-    const validateProduct = (product) => {
+  const validateProduct = (product) => {
     if (!product.name.trim()) {
       alert("El nombre del producto no puede estar vacío.");
       return false;
@@ -160,17 +183,69 @@ const ProductTab = () => {
     return true;
   };
 
-const handleSaveProduct = (productId) => {
+  const handleSaveProduct = async (productId) => {
     const productToSave = editingProducts.find(p => p.id === productId);
 
     if (!validateProduct(productToSave)) {
       return; // Stop if validation fails
     }
 
-    toggleEditRow(productId); // Proceed to save and exit edit mode
+    const isNewProduct = newProductIds.includes(productId);
+
+    // Prepare the data for Supabase, mapping image URLs to image_urls
+    const { images, ...supabaseProductData } = {
+        ...productToSave,
+        image_urls: productToSave.images || [], // Use image_urls for Supabase
+    };
+
+    try {
+      if (isNewProduct) {
+        // Insert new product
+        const { data, error } = await supabase.from('products').insert([supabaseProductData]).select();
+        if (error) throw error;
+
+        // Update local state with the new product data from Supabase, including the auto-generated ID.  Merge
+        // the returned data with the local productToSave to ensure all local changes are preserved.
+        if (data && data.length > 0) {
+          setProducts((prevProducts) => {
+            const updatedProducts = prevProducts.map((p) =>
+              p.id === productId ? { ...productToSave, id: data[0].id } : p
+            );
+            return updatedProducts;
+          });
+        }
+
+        setNewProductIds((prev) => prev.filter((id) => id !== productId));
+      } else {
+        // Update existing product
+        const { error } = await supabase
+          .from('products')
+          .update(supabaseProductData)
+          .eq('id', productId);
+        if (error) throw error;
+
+        // Update local state to reflect changes
+        setProducts((prevProducts) =>
+          prevProducts.map((p) =>
+            p.id === productId ? { ...p, ...supabaseProductData } : p
+          )
+        );
+      }
+
+      // Update editingProducts with the saved product
+      setEditingProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === productId ? { ...p, ...productToSave } : p
+        )
+      );
+      setEditingRows((prev) => ({ ...prev, [productId]: false }));
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert('Error saving product: ' + error.message);
+    }
   };
 
-  const handleColorChange = (productId, index, newColor) => {
+    const handleColorChange = (productId, index, newColor) => {
     const updatedProducts = editingProducts.map(product => {
       if (product.id === productId) {
         const updatedColors = [...(product.colors || [])];
@@ -193,11 +268,13 @@ const handleSaveProduct = (productId) => {
     updateProducts(updatedProducts);
   };
 
-  // Handle remove image
   const handleRemoveImage = (productId, imageIndex) => {
-    const updatedProducts = editingProducts.map(product => {
+    const updatedProducts = editingProducts.map((product) => {
       if (product.id === productId) {
-        const updatedImages = product.images.filter((_, idx) => idx !== imageIndex);
+        // Filter out the image to remove, using null for Supabase deletion
+        const updatedImages = product.images.map((img, idx) =>
+          idx === imageIndex ? null : img
+        ).filter(img => img !== null); // Remove null values to clean up the array
         return { ...product, images: updatedImages };
       }
       return product;
@@ -205,22 +282,57 @@ const handleSaveProduct = (productId) => {
     updateProducts(updatedProducts);
   };
 
-
-  // Handle file upload for images. Accepts multiple files.
-  const handleImageUpload = (productId, event) => {
+  const handleImageUpload = async (productId, event) => {
     const files = Array.from(event.target.files);
-    const fileURLs = files.map(file => URL.createObjectURL(file));
-    const updatedProducts = editingProducts.map(product => {
-      if (product.id === productId) {
-        // Append new images to existing images array
-        return { ...product, images: [...(product.images || []), ...fileURLs] };
+
+    // Step 1: Upload files to Supabase Storage
+    const uploadPromises = files.map(async (file) => {
+      const filePath = `${productId}/${file.name}`;
+      const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false, // Set to true if you want to overwrite existing files
+        });
+
+      if (error) {
+        console.error('Error uploading image:', error);
+        throw error; // Throw to stop the process on error
       }
-      return product;
+
+      // Step 2: Get the public URL of the uploaded file
+      const { data: urlData } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return urlData.publicUrl;
     });
-    updateProducts(updatedProducts);
+
+    try {
+      const uploadedImageUrls = await Promise.all(uploadPromises);
+
+      // Step 3: Update the product record with the new image URLs
+      const updatedProducts = editingProducts.map((product) => {
+        if (product.id === productId) {
+          // Append new image URLs to the existing array of image URLs
+          const updatedImageUrls = [
+            ...(product.images || []),
+            ...uploadedImageUrls,
+          ];
+          return { ...product, images: updatedImageUrls };
+        }
+        return product;
+      });
+
+      updateProducts(updatedProducts);
+    } catch (error) {
+      // Handle errors from the upload process
+      console.error('Failed to upload images or update product:', error);
+      alert('Failed to upload images or update product: ' + error.message);
+    }
   };
 
-  const handleSizeAdd = (productId) => {
+    const handleSizeAdd = (productId) => {
     const newSize = newSizeInput[productId]?.trim();
     if (!newSize) return;
     const updatedProducts = editingProducts.map(product => {
@@ -250,7 +362,7 @@ const handleSaveProduct = (productId) => {
   useEffect(() => {
     // Apply initial sort on component mount
     handleSort(sortConfig.key, false);
-  }, []);
+  }, []); // Removed editingProducts dependency
 
   const handleSort = (key, setConfig = true) => {
     let direction = 'ascending';
@@ -272,19 +384,18 @@ const handleSaveProduct = (productId) => {
       }
       return 0;
     });
-   if(editingProducts.length) {
+    if(editingProducts.length) {
         updateProducts(sortedProducts);
-   }
-};
-
+    }
+  };
 
   const onDragEnd = (result, productId) => {
     if (!result.destination) {
       return;
     }
-  
+
     const { source, destination, type } = result;
-  
+
     if (type === 'colors') {
         const productIdToUpdate = productId;
         const updatedProducts = editingProducts.map(product => {
@@ -553,17 +664,19 @@ const handleSaveProduct = (productId) => {
                 <td className="p-2">
                   <input
                     type="checkbox"
-                    checked={product.hasSize || false}
-                    onChange={(e) => handleCellUpdate(product.id, 'hasSize', e.target.checked)}
+                    checked={product.has_size || false}
+                    onChange={(e) => handleCellUpdate(product.id, 'has_size', e.target.checked)}
                     disabled={!editingRows[product.id]}
+                    onFocus={() => console.log('hasSize checkbox focused', product.id, editingRows[product.id], product.has_size)}
                   />
                 </td>
                 <td className="p-2">
                   <input
                     type="checkbox"
-                    checked={product.hasColor || false}
-                    onChange={(e) => handleCellUpdate(product.id, 'hasColor', e.target.checked)}
+                    checked={product.has_color || false}
+                    onChange={(e) => handleCellUpdate(product.id, 'has_color', e.target.checked)}
                     disabled={!editingRows[product.id]}
+                    onFocus={() => console.log('hasColor checkbox focused', product.id, editingRows[product.id], product.has_color)}
                   />
                 </td>
                 <td className="p-2">
