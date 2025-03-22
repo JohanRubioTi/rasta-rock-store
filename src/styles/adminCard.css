@@ -1,46 +1,20 @@
-/* New Admin Table Card Styles */
-.admin-table-card {
-  background-color: rgba(0, 0, 0, 0.6); /* Darker base with transparency */
-  backdrop-filter: blur(15px); /* Strong blur effect */
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 30px rgba(0, 255, 255, 0.2);
-  padding: 20px;
-  border-radius: 15px;
-  color: #fff;
-  transition: box-shadow 0.3s ease;
+.rasta table {
+  border-collapse: collapse; /* Remove spacing between borders */
+  border-radius: 0.5rem; /* Rounded corners for the table */
+  overflow: hidden; /* Ensure rounded corners are visible */
 }
 
-/* Enhanced table styles within admin table cards */
-.admin-table-card table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: transparent;
-  margin-bottom: 15px;
-  overflow-x: auto;
+.rasta tr {
+  border-bottom: 1px solid #ddd; /* Subtle row lines */
 }
 
-.admin-table-card table th,
-.admin-table-card table td {
-  padding: 10px; /* Adjusted padding for cells */
-  text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Added border outline */
-  background-color: rgba(255, 255, 255, 0.05); /* Lighter cell background */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle bottom border */
-  border-radius: 4px; /* Cell corner rounding */
+.rasta th,
+.rasta td {
+  border-right: 1px solid #ddd; /* Subtle column lines */
+  padding: 0.5rem; /* Add some padding */
 }
 
-.admin-table-card table th {
-  background-color: rgba(0, 255, 255, 0.15);
-  color: #fff;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 12px 8px;
-}
-
-/* Hide ID column */
-.admin-table-card table th:first-child,
-.admin-table-card table td:first-child {
-  display: none;
+.rasta th:last-child,
+.rasta td:last-child {
+  border-right: none; /* Remove border from the last column */
 }

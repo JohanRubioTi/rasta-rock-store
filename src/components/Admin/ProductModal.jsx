@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handleSubmit, onClose }) => {
+const ProductModal = ({ modalOpen, isEditing, formData, setFormData, handleSubmit, onClose }) => {
   if (!modalOpen) return null;
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -50,30 +59,17 @@ const ProductModal = ({ modalOpen, isEditing, formData, handleInputChange, handl
               required
             />
           </div>
-          <div>
-            <label className="block text-white">Imágenes (URLs separadas por comas)</label>
-            <input
-              type="text"
-              name="images"
-              value={formData.images}
-              onChange={handleInputChange}
-              className="w-full p-2 rounded"
-            />
-          </div>
-          {formData.images && formData.images.trim() !== '' && (() => {
-              const previewUrl = formData.images.split(',')[0].trim();
-              const validUrl = (previewUrl.startsWith("http://") || previewUrl.startsWith("https://")) ? previewUrl : "https://placehold.co/400";
-              return (
-                <div className="mt-2">
-                  <img 
-                    src={validUrl}
-                    alt="Vista previa del producto"
-                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400"; }}
-                    className="w-full h-auto rounded"
-                  />
-                </div>
-              );
-            })()}
+          
+          {formData.images && (() => (
+              <div className="mt-2">
+                <img 
+                  src={formData.images}
+                  alt="Vista previa del producto"
+                  onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400"; }}
+                  className="w-full h-auto rounded"
+                />
+              </div>
+            ))()}
           <div>
             <label className="block text-white">Categoría</label>
             <input

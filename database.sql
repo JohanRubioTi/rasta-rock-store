@@ -74,3 +74,33 @@ CREATE TABLE refunds (
     amount FLOAT,
     status TEXT
 );
+
+-- Function to append image URL to product
+CREATE OR REPLACE FUNCTION append_image_to_product(product_id UUID, new_image_url TEXT)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE products
+  SET image_urls = array_append(image_urls, new_image_url)
+  WHERE id = product_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to remove image URL from product
+CREATE OR REPLACE FUNCTION remove_image_from_product(product_id UUID, image_url_to_remove TEXT)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE products
+  SET image_urls = array_remove(image_urls, image_url_to_remove)
+  WHERE id = product_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to reorder product images
+CREATE OR REPLACE FUNCTION reorder_product_images(product_id UUID, new_image_order TEXT[])
+RETURNS VOID AS $$
+BEGIN
+  UPDATE products
+  SET image_urls = new_image_order
+  WHERE id = product_id;
+END;
+$$ LANGUAGE plpgsql;

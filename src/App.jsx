@@ -17,14 +17,12 @@ function App() {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
-      console.log('Initial user:', user); // Log initial user
     };
 
     checkUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      console.log('Auth state change event:', event, 'Session:', session); // Log auth state changes
     });
 
     return () => {
