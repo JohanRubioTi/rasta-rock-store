@@ -12,7 +12,6 @@ const ProductTable = ({
   handleSelectChange,
   handleColorChange,
   handleAddColor,
-  handleRemoveImage,
   handleImageUpload,
   handleSizeAdd,
   handleSizeRemove,
@@ -24,8 +23,9 @@ const ProductTable = ({
   updateProducts,
   sortConfig,
   handleSort,
-  onDragEnd,
-  newProductIds
+  onDragEnd, // Receive onDragEnd prop
+  newProductIds,
+  deletingImage // Receive deletingImage prop
 }) => {
 
     const handleAddProduct = async () => {
@@ -78,7 +78,6 @@ const ProductTable = ({
                 handleSelectChange={handleSelectChange}
                 handleColorChange={handleColorChange}
                 handleAddColor={handleAddColor}
-                handleRemoveImage={handleRemoveImage}
                 handleImageUpload={handleImageUpload}
                 handleSizeAdd={handleSizeAdd}
                 handleSizeRemove={handleSizeRemove}
@@ -88,7 +87,10 @@ const ProductTable = ({
                 cancelEditRow={cancelEditRow}
                 handleSaveProduct={handleSaveProduct}
                 updateProducts={updateProducts}
-                newProductIds={newProductIds}
+                sortConfig={sortConfig}
+                handleSort={handleSort}
+                onDragEnd={onDragEnd} // Pass onDragEnd to ProductRow
+                deletingImage={deletingImage} // Pass deletingImage to ProductRow
               />
             ))}
           </tbody>

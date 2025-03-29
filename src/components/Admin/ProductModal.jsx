@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ProductImageDnD from './ProductImageDnD';
 
 const ProductModal = ({ modalOpen, isEditing, formData, setFormData, handleSubmit, onClose }) => {
   if (!modalOpen) return null;
@@ -60,13 +61,17 @@ const ProductModal = ({ modalOpen, isEditing, formData, setFormData, handleSubmi
             />
           </div>
           
-          {formData.images && (() => (
+          {formData.images?.length > 0 && (() => (
               <div className="mt-2">
-                <img 
-                  src={formData.images}
-                  alt="Vista previa del producto"
-                  onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400"; }}
-                  className="w-full h-auto rounded"
+                <ProductImageDnD 
+                  images={formData.images}
+                  productId={formData.id}
+                  onRemoveImage={(productId, imageId) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      images: prev.images.filter(img => img.id !== imageId)
+                    }));
+                  }}
                 />
               </div>
             ))()}
