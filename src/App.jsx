@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { Provider } from 'jotai';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import ProductCatalog from './components/Product/ProductCatalog';
 import ProductDetail from './components/Product/ProductDetail';
@@ -7,10 +8,11 @@ import BandPage from './components/Band/BandPage';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
-import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import ProtectedRoute from './components/ProtectedRoute';
+import DataInitializer from './components/DataInitializer';
 import { supabase } from './supabaseClient';
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute user={user}> {/* Use ProtectedRoute */}
+            <ProtectedRoute user={user}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -49,6 +51,16 @@ function App() {
         <Route path="/register" element={<Register />} />
       </Routes>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Provider>
+      <DataInitializer>
+        <AppContent />
+      </DataInitializer>
+    </Provider>
   );
 }
 

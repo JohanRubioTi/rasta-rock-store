@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { userAtom, isAuthenticatedAtom } from '../store/adminAtoms';
+import { userAtom, isAuthenticatedAtom, categoriesAtom } from '../store/adminAtoms';
 import { supabase } from '../supabaseClient';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [user, setUser] = useAtom(userAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [categories] = useAtom(categoriesAtom);
   const location = useLocation();
   const navigate = useNavigate();
   const showCategories = location.pathname !== '/products'; // Conditionally show categories
@@ -34,21 +35,16 @@ const Navbar = () => {
           {/* Category Links - Hidden on Product Catalog Page */}
           {showCategories && (
             <ul className="hidden md:flex space-x-6">
-              <li>
-                <Link to="/products?category=accessories" className="nav-link font-rasta-nav-links uppercase">Accesorios</Link>
-              </li>
-              <li>
-                <Link to="/products?category=clothing" className="nav-link font-rasta-nav-links uppercase">Ropa</Link>
-              </li>
-              <li>
-                <Link to="/products?category=smoke-accessories" className="nav-link font-rasta-nav-links uppercase">Accesorios de Fumar</Link>
-              </li>
-              <li>
-                <Link to="/products?category=handmade-decorations" className="nav-link font-rasta-nav-links uppercase">Decoración Artesanal</Link>
-              </li>
-              <li>
-                <Link to="/products?category=piercings" className="nav-link font-rasta-nav-links uppercase">Piercings</Link>
-              </li>
+              {categories?.map(category => (
+                <li key={category.id}>
+                  <Link 
+                    to={`/products?category=${category.id}`} 
+                    className="nav-link font-rasta-nav-links uppercase"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           )}
 
@@ -59,7 +55,15 @@ const Navbar = () => {
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-rastaDark rounded-md shadow-lg py-1">
-                <Link to="/products" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Categorías</Link>
+                {showCategories && categories?.map(category => (
+                  <Link 
+                    key={category.id}
+                    to={`/products?category=${category.id}`}
+                    className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase"
+                  >
+                    {category.name}
+                  </Link>
+                ))}
                 <Link to="/bands" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Bandas</Link>
                 {isAuthenticated && user?.isAdmin && <Link to="/admin" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Admin</Link>}
                 {isAuthenticated ? (

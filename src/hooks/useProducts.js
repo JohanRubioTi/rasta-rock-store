@@ -11,7 +11,7 @@ const useProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase.from('products').select('*');
+      const { data, error } = await supabase.from('products').select('*, image_urls');
       if (error) {
         setError(error);
         console.error('Error fetching products:', error);

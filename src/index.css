@@ -35,18 +35,23 @@
   transition: opacity 0.3s ease, transform 0.3s ease; /* Add transform transition */
 }
 
-/* Show buttons on hover, hide title/price */
+/* Show buttons on hover while keeping content visible */
 .rasta-card-gradient:hover .product-card-buttons {
   opacity: 1;
   transform: translateY(0); /* Slide buttons up to be fully visible */
 }
 
+.product-card-content {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
 .rasta-card-gradient:hover .product-card-content {
-    opacity: 0;
+    opacity: 1; /* Keep content visible */
 }
 
 .rasta-card-gradient:hover .product-image {
-    opacity: 0.8; /* Slightly dim the image on hover */
+    opacity: 1; /* Keep image fully visible */
 }
 
 .product-image {
