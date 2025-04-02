@@ -11,6 +11,8 @@ import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import DataInitializer from './components/DataInitializer';
 import { supabase } from './supabaseClient';
+import { CartFAB } from './components/Cart';
+import CartView from './components/Cart/CartView';
 
 function AppContent() {
   const [user, setUser] = useState(null);
@@ -33,7 +35,8 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="font-rasta-body">
+    <div className="font-rasta-body relative">
+      <CartFAB />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
@@ -49,6 +52,7 @@ function AppContent() {
         <Route path="/bands" element={<BandPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/cart" element={<CartView />} />
       </Routes>
     </div>
   );

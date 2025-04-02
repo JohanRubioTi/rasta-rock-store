@@ -4,7 +4,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
-const ThreeDScene = ({ variant }) => {
+const ThreeDScene = ({ variant, loading = false }) => {
   const mountRef = useRef(null);
 
   useEffect(() => {
@@ -16,7 +16,75 @@ const ThreeDScene = ({ variant }) => {
     let shaderMaterial;
     const rastaColors = [0x00ff00, 0xffff00, 0xff0000];
 
+      const createLoadingScene = () => {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ 
+          alpha: true, 
+          antialias: true,
+          powerPreference: 'high-performance'
+        });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        
+        if (mountRef.current) {
+          mountRef.current.appendChild(renderer.domElement);
+        }
+
+        camera.position.z = 15;
+        
+        // Create smooth gradient background
+        const gradientTexture = new THREE.CanvasTexture(createGradientCanvas());
+        scene.background = gradientTexture;
+        
+        // Create optimized loading animation with Rasta colors
+        const colors = [0xff0000, 0xffff00, 0x00ff00]; // Red, Yellow, Green
+        const sphereSize = 1.2;
+        const spacing = 3;
+        
+        group = new THREE.Group();
+        
+        colors.forEach((color, i) => {
+          const geometry = new THREE.SphereGeometry(sphereSize, 16, 16);
+          const material = new THREE.MeshBasicMaterial({ 
+            color,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+          });
+          const sphere = new THREE.Mesh(geometry, material);
+          
+          sphere.position.x = (i - 1) * spacing;
+          sphere.position.y = Math.sin(i * 2) * 0.5; // Slight vertical offset
+          group.add(sphere);
+        });
+        
+        scene.add(group);
+      };
+
+      const createGradientCanvas = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#1a2a6c');
+        gradient.addColorStop(0.5, '#b21f1f');
+        gradient.addColorStop(1, '#fdbb2d');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        return canvas;
+      };
+
     const initScene = () => {
+      if (loading) {
+        createLoadingScene();
+        return;
+      }
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(
         variant === 'original' ? 50 : 75,
@@ -388,7 +456,14 @@ const ThreeDScene = ({ variant }) => {
 
       const delta = clock.getDelta();
 
-      if (variant === 'original' && group) {
+      if (loading && group) {
+        // Animate loading cubes
+        group.children.forEach((cube, i) => {
+          cube.rotation.x += delta * 0.5;
+          cube.rotation.y += delta * 0.3;
+          cube.rotation.z += delta * 0.2;
+        });
+      } else if (variant === 'original' && group) {
         group.children.forEach((mesh, index) => {
           mesh.rotation.x += 0.2 * delta;
           mesh.rotation.y += 0.1 * delta;

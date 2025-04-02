@@ -27,7 +27,7 @@
           animation: {
             'blur-pulse': 'blur-pulse 5s linear infinite',
             'spotlight-move': 'spotlight-move 15s linear infinite',
-            'gradient-shift': 'gradient-shift 5s linear infinite',
+            'gradient-shift': 'gradient-shift 8s ease infinite alternate',
             'gradient-move': 'gradient-move 15s ease infinite', // Increased duration to 15s
       },
       keyframes: {
@@ -47,7 +47,24 @@
           '0%, 100%': { backgroundPosition: '200% 0%' },
           '50%': { backgroundPosition: '0% 200%' },
         },
-  'gradient-x': {
+        'cube-rotate': {
+          '0%': { transform: 'rotateX(0deg) rotateY(0deg)' },
+          '25%': { transform: 'rotateX(90deg) rotateY(90deg)' },
+          '50%': { transform: 'rotateX(180deg) rotateY(180deg)' },
+          '75%': { transform: 'rotateX(270deg) rotateY(270deg)' },
+          '100%': { transform: 'rotateX(360deg) rotateY(360deg)' },
+        },
+        'spinner-pulse': {
+          '0%, 100%': { 
+            borderWidth: '4px',
+            opacity: '1'
+          },
+          '50%': { 
+            borderWidth: '8px',
+            opacity: '0.7'
+          },
+        },
+        'gradient-x': {
           '0%, 100%': {
               'background-size':'200% 200%',
               'background-position': 'left center'

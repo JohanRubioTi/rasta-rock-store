@@ -64,7 +64,7 @@ const Navbar = () => {
                     {category.name}
                   </Link>
                 ))}
-                <Link to="/bands" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Bandas</Link>
+                <Link to="/bands" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">KYRIE</Link>
                 {isAuthenticated && user?.isAdmin && <Link to="/admin" className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Admin</Link>}
                 {isAuthenticated ? (
                   <button onClick={handleLogout} className="block px-4 py-2 text-sm nav-link font-rasta-nav-links uppercase">Logout</button>
@@ -77,12 +77,12 @@ const Navbar = () => {
 
           {/* Bands, Admin, and Login/Logout (visible on larger screens) */}
           <div className="hidden md:flex space-x-6 items-center">
-            <Link to="/bands" className="nav-link font-rasta-nav-links uppercase">Bandas</Link>
+            <Link to="/bands" className="nav-link font-rasta-nav-links uppercase">KYRIE</Link>
             {isAuthenticated && user?.isAdmin && <Link to="/admin" className="nav-link font-rasta-nav-links uppercase">Admin</Link>}
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="nav-link font-rasta-nav-links uppercase">Logout</button>
+              <button onClick={handleLogout} className="nav-link font-rasta-nav-links uppercase">Cerrar Sesión</button>
             ) : (
-              <Link to="/login" className="nav-link font-rasta-nav-links uppercase">Login</Link>
+              <Link to="/login" className="nav-link font-rasta-nav-links uppercase">Iniciar Sesión</Link>
             )}
           </div>
         </div>

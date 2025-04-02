@@ -36,23 +36,26 @@ const Filters = ({
             </select>
           </div>
         </div>
-        <div className="mb-4 flex flex-col space-y-2">
-          <button
-            key="all"
-            className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === 'all' ? 'text-rastaGreen' : ''}`}
-            onClick={() => setSelectedCategory('all')}
-          >
-            Todos
-          </button>
-          {Array.isArray(categories) && categories.map(cat => (
+        <div className="mb-4">
+          <p className="text-sm text-gray-400 mb-2 text-left">Filtrar por categoría:</p>
+          <div className="flex flex-col space-y-2">
             <button
-              key={cat.id}
-              className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === cat.id ? 'text-rastaGreen' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
+              key="all"
+              className={`nav-link font-rasta-nav-links uppercase w-fit px-3 py-1 rounded-md transition-all duration-300 ${selectedCategory === 'all' ? 'text-rastaGreen bg-gradient-to-r from-[#FF0000]/30 via-[#FFFF00]/20 to-[#00FF00]/10 hover:from-[#FF0000]/40 hover:via-[#FFFF00]/30 hover:to-[#00FF00]/20' : 'hover:bg-gray-700/30'}`}
+              onClick={() => setSelectedCategory('all')}
             >
-              {cat.name}
+              Todos
             </button>
-          ))}
+            {Array.isArray(categories) && categories.map(cat => (
+              <button
+                key={cat.id}
+                className={`nav-link font-rasta-nav-links uppercase w-fit px-3 py-1 rounded-md transition-all duration-300 ${selectedCategory === cat.id ? 'text-rastaGreen bg-gradient-to-r from-[#FF0000]/30 via-[#FFFF00]/20 to-[#00FF00]/10 hover:from-[#FF0000]/40 hover:via-[#FFFF00]/30 hover:to-[#00FF00]/20' : 'hover:bg-gray-700/30'}`}
+                onClick={() => setSelectedCategory(cat.id)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -84,23 +87,26 @@ const Filters = ({
             </select>
           </div>
         </div>
-        <div className="mb-4 flex flex-col space-y-4">
-          <button
-            key="all"
-            className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === 'all' ? 'text-rastaGreen' : ''}`}
-            onClick={() => { setSelectedCategory('all'); setShowMobileFilters(false); }}
-          >
-            Todos
-          </button>
-          {Array.isArray(categories) && categories.map(cat => (
+        <div className="mb-4">
+          <p className="text-sm text-gray-400 mb-2 text-left">Filtrar por categoría:</p>
+          <div className="flex flex-col space-y-4">
             <button
-              key={cat.id}
-              className={`nav-link font-rasta-nav-links uppercase ${selectedCategory === cat.id ? 'text-rastaGreen' : ''}`}
-              onClick={() => { setSelectedCategory(cat.id); setShowMobileFilters(false); }}
+              key="all"
+              className={`nav-link font-rasta-nav-links uppercase w-fit px-3 py-1 rounded-md transition-all duration-300 ${selectedCategory === 'all' ? 'text-rastaGreen bg-gradient-to-r from-[#FF0000]/30 via-[#FFFF00]/20 to-[#00FF00]/10 hover:from-[#FF0000]/40 hover:via-[#FFFF00]/30 hover:to-[#00FF00]/20' : 'hover:bg-gray-700/30'}`}
+              onClick={() => { setSelectedCategory('all'); setShowMobileFilters(false); }}
             >
-              {cat.name}
+              Todos
             </button>
-          ))}
+            {Array.isArray(categories) && categories.map(cat => (
+              <button
+                key={cat.id}
+                className={`nav-link font-rasta-nav-links uppercase w-fit px-3 py-1 rounded-md transition-all duration-300 ${selectedCategory === cat.id ? 'text-rastaGreen bg-gradient-to-r from-[#FF0000]/30 via-[#FFFF00]/20 to-[#00FF00]/10 hover:from-[#FF0000]/40 hover:via-[#FFFF00]/30 hover:to-[#00FF00]/20' : 'hover:bg-gray-700/30'}`}
+                onClick={() => { setSelectedCategory(cat.id); setShowMobileFilters(false); }}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
         <button
           onClick={() => setShowMobileFilters(false)}
