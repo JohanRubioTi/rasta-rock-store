@@ -1,8 +1,7 @@
 import React from 'react';
 import { useAtomValue } from 'jotai';
 import { handleRemoveImageAtom } from '../../store/adminAtoms';
-import useImageUploader from './hooks/useImageUploader';
-
+import useImageUploader from '../../hooks/useImageUploader';
 const ImageUploader = ({ onUploadComplete }) => {
   const handleRemoveImage = useAtomValue(handleRemoveImageAtom);
   const { uploadProgress, isUploading, handleFileSelect, uploadFile } = useImageUploader();

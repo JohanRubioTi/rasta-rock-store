@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-// Removed useAtom and productsAtom imports as they are now in FeaturedProducts
+import FeaturedProducts from './Home/FeaturedProducts'; // Import FeaturedProducts
 import Navbar from './Navbar';
-import ThreeDScene from './ThreeDScene';
-import FeaturedProducts from './Home/FeaturedProducts'; // Import the new component
-
+import ThreeDScene from './ThreeDScene/index.jsx';
+ 
 const Home = () => {
   // Removed state logic related to products, now handled in FeaturedProducts
+
+    const scrollProgressRef = useRef(0);
+    useEffect(() => {
+        const handleScroll = () => {
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const currentScroll = window.scrollY;
+            scrollProgressRef.current = currentScroll / maxScroll;
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const scrollProgress = scrollProgressRef.current;
 
   return (
     <div className="relative overflow-x-hidden">
@@ -24,7 +40,7 @@ const Home = () => {
 
         {/* ThreeDScene as the background */}
         <div className="fixed inset-0" style={{ zIndex: -1 }}>
-          <ThreeDScene variant="original" />
+          <ThreeDScene variant="original" scrollProgress={scrollProgress}/>
         </div>
 
         {/* Subheader and CTA */}

@@ -2,15 +2,14 @@ import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import useProducts from '../../hooks/useProducts';
 import ProductTable from './ProductTable';
-import useProductManagement from './hooks/useProductManagement';
-import useProductSaver from './hooks/useProductSaver';
+import useProductSaver from '../../hooks/useProductSaver';
 
 const ProductTab = () => {
   const { products, categories, loading, error, fetchProducts, setProducts } = useProducts();
   const [newProductIds, setNewProductIds] = React.useState([]);
 
   // Product state management
-  const productManagement = useProductManagement(
+  const productManagement = useProductManagement( // Assuming useProductManagement is a custom hook
     products,
     products,
     setProducts,

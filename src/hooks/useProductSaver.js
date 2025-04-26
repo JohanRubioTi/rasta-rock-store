@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '../../../supabaseClient';
+import { supabase } from '../supabaseClient';
 import { useSetAtom } from 'jotai';
-import { handleRemoveImageAtom } from '../../../store/adminAtoms';
+import { handleRemoveImageAtom } from '../store/adminAtoms';
 
-const useProductSaver = (
+  const useProductSaver = (
   editingProducts,
   updateLocalProducts,
   setOriginalProducts,

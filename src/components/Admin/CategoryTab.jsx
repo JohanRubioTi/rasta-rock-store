@@ -12,7 +12,7 @@ const CategoryTab = () => {
     const fetchCategories = async () => {
       const { data, error } = await supabase.from('categories').select('*');
       if (error) {
-        console.error('Error fetching categories:', error);
+       
       } else {
         setCategories(data);
         setEditingCategories(data);
@@ -85,7 +85,7 @@ const CategoryTab = () => {
         );
         setEditingRows(prev => ({ ...prev, [categoryId]: false }));
       } catch (error) {
-        console.error('Error saving category:', error);
+        
         alert('Error saving category: ' + error.message);
       }
     };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import ImageUploader from './ImageUploader';
+import ImageUploader from '../../components/Admin/ImageUploader';
 import ColorEditor from './ColorEditor';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAtomValue } from 'jotai';

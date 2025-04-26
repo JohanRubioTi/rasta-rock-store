@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { cartAtoms } from '../../store/cartAtoms';
+import { cartAtom } from '../../store/cartAtoms';
 import { useAtom } from 'jotai';
 
 const CheckoutPage = () => {
-  const [cart, setCart] = useAtom(cartAtoms);
-  const [paymentUrl, setPaymentUrl] = useState('');
+  const [cart, setCart] = useAtom(cartAtom);
+    const [paymentUrl, setPaymentUrl] = useState('');
   const [error, setError] = useState('');
 
   const handleCheckout = async () => {

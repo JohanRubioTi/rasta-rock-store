@@ -1,7 +1,7 @@
 import React from 'react';
-import KyrieScene from './KyrieScene';
+import ThreeDScene from '../ThreeDScene/index.jsx';
 
-const KyriePage = () => {
+const BandPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black relative">
       <KyrieScene />
@@ -46,4 +46,4 @@ const KyriePage = () => {
   );
 };
 
-export default KyriePage;
+export default BandPage;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { supabase } from '../../../supabaseClient';
-import { uploadProgressAtom } from '../../../store/adminAtoms';
+import { supabase } from '../supabaseClient';
+import { uploadProgressAtom } from '../store/adminAtoms';
 
 export default function useImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);

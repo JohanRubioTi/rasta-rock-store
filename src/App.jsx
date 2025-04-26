@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Provider } from 'jotai';
-import AdminDashboard from './components/Admin/AdminDashboard';
-import ProductCatalog from './components/Product/ProductCatalog';
-import ProductDetail from './components/Product/ProductDetail';
-import BandPage from './components/Band/BandPage';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
+import AdminDashboard from './components/Admin/AdminDashboard';
+import BandPage from './components/Band/BandPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import DataInitializer from './components/DataInitializer';
 import { supabase } from './supabaseClient';
 import { CartFAB } from './components/Cart';
 import CartView from './components/Cart/CartView';
 
+import ProductDetail from './components/Product/ProductDetail';
 function AppContent() {
   const [user, setUser] = useState(null);
 
@@ -26,7 +24,7 @@ function AppContent() {
     checkUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+      setUser(session?.user);
     });
 
     return () => {
@@ -47,8 +45,6 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
-        <Route path="/products" element={<ProductCatalog />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/bands" element={<BandPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -61,9 +57,7 @@ function AppContent() {
 function App() {
   return (
     <Provider>
-      <DataInitializer>
         <AppContent />
-      </DataInitializer>
     </Provider>
   );
 }

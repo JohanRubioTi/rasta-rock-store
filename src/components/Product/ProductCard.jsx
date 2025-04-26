@@ -45,14 +45,13 @@ const ProductCard = ({ product }) => {
 
         {/* Buttons - Shown on hover */}
         <div className="absolute inset-0 flex items-center justify-center space-x-4 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Link 
-            to={`/products/${product.id}`} 
+          <div
             className="bg-rastaRed hover:bg-rastaRedDark text-white font-bold py-2 px-4 rounded-full flex items-center transition-colors shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <EyeIcon className="h-5 w-5 mr-1" />
             Ver
-          </Link>
+          </div>
           <button
             className="bg-rastaGreen hover:bg-rastaGreenDark text-white font-bold py-2 px-4 rounded-full flex items-center transition-colors shadow-lg"
             onClick={handleAddToCart}

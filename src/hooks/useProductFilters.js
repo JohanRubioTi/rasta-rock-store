@@ -18,16 +18,12 @@ const useProductFilters = ({
 
   // Force re-filter when selectedCategory changes
   useEffect(() => {
-    console.log('Category changed to:', selectedCategory);
   }, [selectedCategory]);
 
   const filteredProducts = productsData?.filter(product => {
     // Filter by search term
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase());
-
-    // Filter by category - find matching category ID if selectedCategory is a name
-    console.log('Filtering - selected:', selectedCategory, 'product category:', product.category, 'product:', product);
     const matchesCategory = selectedCategory === 'all' || 
       product.category === selectedCategory ||
       categories?.find(c => c.id === selectedCategory)?.name === product.category;
@@ -49,7 +45,6 @@ const useProductFilters = ({
         setSelectedCategory(categoryParam);
       }
     } catch (error) {
-      console.error('Error processing URL params:', error);
       setError('Failed to process URL filters');
     }
   }, [searchParams, categories]);

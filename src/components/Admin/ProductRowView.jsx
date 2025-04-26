@@ -1,6 +1,6 @@
 import React from 'react';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import ProductImageGallery from './ProductImageGallery';
+import ProductImageGallery from '../../components/Product/ProductImageGallery';
 
 const ProductRowView = ({
   product,

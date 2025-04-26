@@ -9,7 +9,7 @@ const DataInitializer = ({ children }) => {
   const { products, categories, loading, error } = useProducts();
 
   useEffect(() => {
-    if (!loading && !error) {
+    if (!loading && !error && products && categories) {
       setProducts(products);
       setCategories(categories);
     }

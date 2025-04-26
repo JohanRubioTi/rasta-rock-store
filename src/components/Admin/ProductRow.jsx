@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import useImageUploader from './hooks/useImageUploader';
+import useImageUploader from '../../hooks/useImageUploader';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ProductRowEdit from './ProductRowEdit';
 import ProductRowView from './ProductRowView';

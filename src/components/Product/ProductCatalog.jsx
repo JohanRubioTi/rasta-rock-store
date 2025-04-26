@@ -14,8 +14,6 @@ const ProductCatalog = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  console.log('Selected category:', selectedCategory);
-  console.log('Categories:', categories);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('price-low-high');
   const [showMobileFilters, setShowMobileFilters] = useState(false);

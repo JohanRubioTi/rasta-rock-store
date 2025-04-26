@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import Spinner from '../Spinner';
+import Spinner from '../common/Spinner';
 import { useParams, Link } from 'react-router-dom';
-import Navbar from '../Navbar';
-import ThreeDScene from '../ThreeDScene';
+import Navbar from '../../components/Navbar';
+import ThreeDScene from '../../components/ThreeDScene';
 import useProductDetail from '../../hooks/useProductDetail';
 import ProductImageGallery from './ProductImageGallery';
 import ProductInfo from './ProductInfo';
 import ProductVariants from './ProductVariants';
 import QuantitySelector from './QuantitySelector';
 import ProductActions from './ProductActions';
-import ProductDescriptionTabs from './ProductDescriptionTabs';
-import RelatedProducts from './RelatedProducts';
+import ProductDescriptionTabs from '../../components/Product/DescTabs';
+import RelatedProducts from '../../components/Product/RelatedProducts';
 import { formatPriceCOP } from '../../utils/formatting'; // Import from utils
 
 // Export formatPriceCOP for ProductInfo (or update ProductInfo to import directly)
