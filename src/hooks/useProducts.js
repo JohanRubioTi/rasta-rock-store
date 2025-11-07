@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import axios from 'axios';
 
 const useProducts = () => {
   const [products, setProducts] = useState([]);
@@ -11,13 +11,10 @@ const useProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase.from('products').select('*, image_urls');
-      if (error) {
-        setError(error);
-       
-      } else {
-          setProducts(data);
-      }
+      const response = await axios.get('/api/products');
+      setProducts(response.data);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -27,21 +24,10 @@ const useProducts = () => {
     setLoading(true);
     setError(null);
     try {
-        const { data, error } = await supabase
-            .from('categories')
-            .select('*')
-            .then((res) => {
-                if(res.error){
-                    throw new Error(res.error.message)
-                } else {
-                    return res
-                }
-            });
-      if (error) {
-        setError(error);
-      } else {
-        setCategories(data);
-      }
+      const response = await axios.get('/api/categories');
+      setCategories(response.data);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }

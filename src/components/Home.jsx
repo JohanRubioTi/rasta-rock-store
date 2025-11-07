@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import FeaturedProducts from './Home/FeaturedProducts'; // Import FeaturedProducts
 import Navbar from './Navbar';
-import ThreeDScene from './ThreeDScene/index.jsx';
+const ThreeDScene = lazy(() => import('./ThreeDScene/index.jsx'));
  
 const Home = () => {
   // Removed state logic related to products, now handled in FeaturedProducts
@@ -40,7 +40,9 @@ const Home = () => {
 
         {/* ThreeDScene as the background */}
         <div className="fixed inset-0" style={{ zIndex: -1 }}>
-          <ThreeDScene variant="original" scrollProgress={scrollProgress}/>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ThreeDScene variant="original" scrollProgress={scrollProgress} />
+          </Suspense>
         </div>
 
         {/* Subheader and CTA */}

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Provider } from 'jotai';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
-import AdminDashboard from './components/Admin/AdminDashboard';
+const AdminDashboard = lazy(() => import('./components/Admin/AdminDashboard'));
 import BandPage from './components/Band/BandPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { supabase } from './supabaseClient';
@@ -12,6 +12,8 @@ import { CartFAB } from './components/Cart';
 import CartView from './components/Cart/CartView';
 
 import ProductDetail from './components/Product/ProductDetail';
+import SearchResults from './components/Search/SearchResults';
+
 function AppContent() {
   const [user, setUser] = useState(null);
 
@@ -41,7 +43,9 @@ function AppContent() {
           path="/admin"
           element={
             <ProtectedRoute user={user}>
-              <AdminDashboard />
+              <Suspense fallback={<div>Loading...</div>}>
+                <AdminDashboard />
+              </Suspense>
             </ProtectedRoute>
           }
         />
@@ -49,6 +53,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<CartView />} />
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
     </div>
   );
