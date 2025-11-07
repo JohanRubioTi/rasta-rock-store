@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
 import { createDlocalPayment } from './dlocalgo.js'; // Import dLocal Go module
+import { supabase } from '../src/supabaseClient.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,69 +13,120 @@ const port = 3001;
 
 app.use(express.json());
 
-// Mock Data (In-memory)
-const products = [
-  { id: 1, name: 'Rasta Hat', description: 'A colorful Rasta hat.', price: 20, imageUrl: 'https://via.placeholder.com/150' },
-  { id: 2, name: 'Rock T-Shirt', description: 'A cool rock band t-shirt.', price: 25, imageUrl: 'https://via.placeholder.com/150' },
-  { id: 3, name: 'Handmade Bracelet', description: 'A unique handmade bracelet.', price: 15, imageUrl: 'https://via.placeholder.com/150'},
-  { id: 4, name: 'Smoke Accessory', description: 'A stylish smoke accessory.', price: 30, imageUrl: 'https://via.placeholder.com/150' },
-];
-
-const orders = [
-  { id: 1, status: 'Pending' },
-  { id: 2, status: 'Shipped' },
-];
-
-const users = [
-    {id: 1, name: "Admin", role: "admin"},
-    {id: 2, name: "Editor", role: "editor"}
-]
-
 // API Endpoints
-app.get('/api/products', (req, res) => {
-  res.json(products);
+app.get('/api/products', async (req, res) => {
+  const { data, error } = await supabase.from('products').select('*');
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
 });
 
-app.get('/api/products/:id', (req, res) => {
-  const product = products.find((p) => p.id === parseInt(req.params.id));
-  if (!product) {
+app.get('/api/search', async (req, res) => {
+  const { q } = req.query;
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .textSearch('name', q);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
+});
+
+app.get('/api/categories', async (req, res) => {
+  const { data, error } = await supabase.from('categories').select('*');
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
+});
+
+app.get('/api/products/:id', async (req, res) => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', req.params.id)
+    .single();
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  if (!data) {
     return res.status(404).json({ message: 'Product not found' });
   }
-  res.json(product);
+  res.json(data);
 });
 
-app.get('/api/orders', (req, res) => {
-  res.json(orders);
+app.get('/api/products/:id/related', async (req, res) => {
+  const { data: product, error: productError } = await supabase
+    .from('products')
+    .select('category')
+    .eq('id', req.params.id)
+    .single();
+
+  if (productError) {
+    return res.status(500).json({ error: productError.message });
+  }
+
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('category', product.category)
+    .neq('id', req.params.id)
+    .limit(4);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
 });
 
-app.get('/api/users', (req, res) => {
-    res.json(users)
-})
+app.get('/api/orders', async (req, res) => {
+  const { data, error } = await supabase.from('orders').select('*');
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
+});
+
+app.get('/api/users', async (req, res) => {
+  const { data, error } = await supabase.from('users').select('*');
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
+});
 
 // API endpoint to create a payment
 app.post('/api/payment/create', async (req, res) => {
+  const { amount, items } = req.body;
+
+  if (!amount || !items) {
+    return res.status(400).json({ error: 'Amount and items are required' });
+  }
+
   try {
     const paymentData = {
-      currency: 'USD', // Example currency - get from config or frontend later
-      amount: req.body.amount,
-      country: 'US',     // Example country - get from config or user profile later
-      order_id:  `ORDER-${Date.now()}`, // Generate dynamic order ID
-      description: 'Rasta Rock Store Purchase', // Description
-      success_url: 'http://localhost:5173/checkout/success', // Replace with actual success URL
-      back_url: 'http://localhost:5173/cart',    // Back to cart
-      notification_url: 'https://your-webhook-url.com/webhook', // Replace with actual webhook URL
-      payerName: 'John Doe', // Example payer name - get from user info later
-      payerEmail: 'john.doe@example.com', // Example payer email - get from user info later
-      items: req.body.items, // Items from cart
+      currency: 'USD',
+      amount,
+      country: 'US',
+      order_id: `ORDER-${Date.now()}`,
+      description: 'Rasta Rock Store Purchase',
+      success_url: 'http://localhost:5173/checkout/success',
+      back_url: 'http://localhost:5173/cart',
+      notification_url: 'https://your-webhook-url.com/webhook',
+      payerName: 'John Doe',
+      payerEmail: 'john.doe@example.com',
+      items,
     };
 
     const { payment_url, transaction_id } = await createDlocalPayment(paymentData);
 
     res.json({ payment_url, transaction_id });
-
   } catch (error) {
     console.error('Error creating payment:', error);
-    res.status(500).json({ error: 'Failed to create payment', details: error }); // Send full error details
+    res.status(500).json({ error: 'Failed to create payment', details: error.message });
   }
 });
 
@@ -130,8 +182,19 @@ app.post('/api/payment/webhook', async (req, res) => {
     const webhookData = req.body;
     console.log('dLocal Webhook received (signature verified):', webhookData);
 
-    // TODO: Update order status in database based on webhookData (payment status from webhookData)
-    // TODO: Extract payment_id from webhookData to update the correct order
+    const { order_id, status } = webhookData;
+
+    if (order_id && status) {
+      const { data, error } = await supabase
+        .from('orders')
+        .update({ payment_status: status })
+        .eq('id', order_id);
+
+      if (error) {
+        console.error('Error updating order status:', error);
+        return res.status(500).send('Error updating order status');
+      }
+    }
 
     res.status(200).send('Webhook received and signature verified');
   } catch (error) {

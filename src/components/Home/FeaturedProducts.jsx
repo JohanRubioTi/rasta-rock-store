@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { productsAtom } from '../../store/adminAtoms';
 import ProductCard from '../Product/ProductCard';
+import axios from 'axios';
 
 const FeaturedProducts = () => {
-  const [productsData] = useAtom(productsAtom);
+  const [productsData, setProductsData] = useAtom(productsAtom);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('/api/products');
+        setProductsData(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, [setProductsData]);
 
   // Ensure productsData is an array before slicing
   const featuredProducts = Array.isArray(productsData) ? productsData.slice(0, 8) : [];
