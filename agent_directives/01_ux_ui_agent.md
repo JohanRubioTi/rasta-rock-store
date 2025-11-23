@@ -25,7 +25,10 @@ Refactor the frontend to implement a seamless "Scrollytelling" experience using 
     *   *Top*: Hero 3D element (e.g., a floating gold vinyl or Rasta badge).
     *   *Middle*: As user scrolls, the camera dives *into* the scene or the object deconstructs/morphs.
     *   *Bottom*: Elements align to frame the "Featured Products".
-*   **Background**: Use a dynamic shader or particle system that reacts to scroll speed (e.g., warp speed effect when scrolling fast).
+*   **Contextual Background (CRITICAL)**:
+    *   **No Generic Particles**: Do not use generic particle systems. The background must be a cohesive 3D custom code experience that evolves significantly as the user scrolls.
+    *   **Context Awareness**: The background must change visually and thematically to highlight the context of each section (e.g., transforming geometry, shifting lighting moods, or evolving shader patterns) while maintaining the "Rasta Rock" identity.
+    *   **Seamless Transition**: Transitions between these context states must be fluid and driven by the scroll progress.
 
 ### 4. **Performance Optimization (High Priority)**
 *   **InstancedMesh**: If you render multiple similar objects (e.g., floating cannabis leaves, music notes, or abstract shapes), you **MUST** use `THREE.InstancedMesh`. Do not create individual Mesh objects.
