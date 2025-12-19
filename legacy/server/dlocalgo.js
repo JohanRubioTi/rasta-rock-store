@@ -1,8 +1,8 @@
 import axios from 'axios';
 import crypto from 'crypto';
 
-const apiKey = process.env.DLOCAL_API_KEY;
-const secretKey = process.env.DLOCAL_SECRET_KEY;
+const apiKey = 'CKQMEPvUkNeQAmxvERJqClIaCyZmRWXw'; // Replace with your actual API Key - FOR TESTING ONLY, SHOULD BE ENV VAR
+const secretKey = 'XbXcslaVnIri9gYMz8fjTLkH4bbWtbXgHJJk81zw'; // Replace with your actual Secret Key - FOR TESTING ONLY, SHOULD BE ENV VAR
 const authKey = `${apiKey}:${secretKey}`;
 const dlocalApiUrl = 'https://api-sbx.dlocalgo.com/v1'; // Base URL for dLocal API
 
